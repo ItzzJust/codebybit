@@ -25,10 +25,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <SidebarProvider>
             <ToastProvider>
               <TooltipProvider>
-                <header className="pt-16">
-                  <Navbar />
-                </header>
-                {children}
+                <Navbar />
+                <div className="pt-16">{children}</div>
               </TooltipProvider>
             </ToastProvider>
           </SidebarProvider>

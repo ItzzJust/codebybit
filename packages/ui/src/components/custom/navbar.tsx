@@ -8,8 +8,18 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@codebybit/ui";
-import { Link } from "@tanstack/react-router";
-import { LogInIcon, MenuIcon, UserPlusIcon, XIcon } from "lucide-react";
+import { Link, useMatchRoute } from "@tanstack/react-router";
+import {
+  BlocksIcon,
+  GlobeIcon,
+  HomeIcon,
+  LogInIcon,
+  MenuIcon,
+  MessageCircleIcon,
+  PickaxeIcon,
+  UserPlusIcon,
+  XIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { ThemeToggle } from "../motion/theme-toggle";
@@ -18,15 +28,37 @@ import { Logo } from "./logo";
 interface NavItem {
   to: string;
   label: string;
+  icon: React.ReactNode;
   exact?: boolean;
 }
 
 const navLinks: NavItem[] = [
-  { exact: true, label: "Home", to: "/" },
-  { label: "Minecraft", to: "/resources/minecraft" },
-  { label: "Roblox", to: "/resources/roblox" },
-  { label: "Websites", to: "/resources/websites" },
-  { label: "Discord", to: "/resources/discord" },
+  {
+    exact: true,
+    label: "Home",
+    to: "/",
+    icon: <HomeIcon className="size-4" />,
+  },
+  {
+    label: "Minecraft",
+    to: "/resources/minecraft",
+    icon: <PickaxeIcon className="size-4" />,
+  },
+  {
+    label: "Roblox",
+    to: "/resources/roblox",
+    icon: <BlocksIcon className="size-4" />,
+  },
+  {
+    label: "Websites",
+    to: "/resources/websites",
+    icon: <GlobeIcon className="size-4" />,
+  },
+  {
+    label: "Discord",
+    to: "/resources/discord",
+    icon: <MessageCircleIcon className="size-4" />,
+  },
 ];
 
 interface NavbarProps {
@@ -35,6 +67,10 @@ interface NavbarProps {
 
 export function Navbar({ title = "CodeByBit" }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const matchRoute = useMatchRoute();
+
+  const isLogin = matchRoute({ to: "/login", fuzzy: true });
+  const isRegister = matchRoute({ to: "/register", fuzzy: true });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
@@ -52,9 +88,8 @@ export function Navbar({ title = "CodeByBit" }: NavbarProps) {
   }, []);
 
   return (
-    <nav className="border-border/40 bg-background/80 fixed top-0 left-0 z-50 w-full border-b backdrop-blur-md">
-      {" "}
-      <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <nav className="border-border/40 bg-background/80 fixed top-0 left-0 z-50 h-16 w-full border-b backdrop-blur-md">
+      <div className="container mx-auto flex h-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link
           to="/"
           className="flex min-w-0 shrink items-center gap-2.5 transition-opacity hover:opacity-80"
@@ -66,7 +101,7 @@ export function Navbar({ title = "CodeByBit" }: NavbarProps) {
         </Link>
 
         <div className="hidden shrink-0 items-center gap-1 md:flex lg:gap-2">
-          {navLinks.map(({ to, label, exact = false }) => (
+          {navLinks.map(({ to, label, icon, exact = false }) => (
             <Link
               key={to}
               to={to}
@@ -74,8 +109,9 @@ export function Navbar({ title = "CodeByBit" }: NavbarProps) {
               activeProps={{
                 className: "text-foreground font-semibold bg-accent/60",
               }}
-              className="text-muted-foreground hover:bg-accent/40 hover:text-foreground rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
+              className="text-muted-foreground hover:bg-accent/40 hover:text-foreground flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors"
             >
+              {icon}
               {label}
             </Link>
           ))}
@@ -87,7 +123,7 @@ export function Navbar({ title = "CodeByBit" }: NavbarProps) {
           <ButtonGroup className="hidden md:flex">
             <Button
               size="icon-lg"
-              variant="outline"
+              variant={isLogin ? "default" : "outline"}
               nativeButton={false}
               render={
                 <Link to="/login" aria-label="Login">
@@ -97,7 +133,7 @@ export function Navbar({ title = "CodeByBit" }: NavbarProps) {
             />
             <Button
               size="icon-lg"
-              variant="outline"
+              variant={isRegister ? "default" : "outline"}
               nativeButton={false}
               render={
                 <Link to="/register" aria-label="Register">
@@ -142,14 +178,14 @@ export function Navbar({ title = "CodeByBit" }: NavbarProps) {
                   aria-label="Mobile navigation"
                   className="flex flex-col gap-1.5"
                 >
-                  {navLinks.map(({ to, label, exact = false }) => (
+                  {navLinks.map(({ to, label, icon, exact = false }) => (
                     <DrawerClose
                       key={to}
                       render={
                         <Button
                           variant="ghost"
                           nativeButton={false}
-                          className="h-12 w-full justify-start px-3 text-left text-base font-medium"
+                          className="h-12 w-full justify-start gap-2.5 px-3 text-left text-base font-medium"
                           render={
                             <Link
                               to={to}
@@ -161,6 +197,7 @@ export function Navbar({ title = "CodeByBit" }: NavbarProps) {
                             />
                           }
                         >
+                          {icon}
                           {label}
                         </Button>
                       }
@@ -172,7 +209,7 @@ export function Navbar({ title = "CodeByBit" }: NavbarProps) {
                   <DrawerClose
                     render={
                       <Button
-                        variant="outline"
+                        variant={isLogin ? "default" : "outline"}
                         nativeButton={false}
                         className="h-11 w-full justify-center gap-2 text-sm font-medium"
                         render={<Link to="/login" />}
@@ -186,7 +223,7 @@ export function Navbar({ title = "CodeByBit" }: NavbarProps) {
                   <DrawerClose
                     render={
                       <Button
-                        variant="default"
+                        variant={isRegister ? "default" : "outline"}
                         nativeButton={false}
                         className="h-11 w-full justify-center gap-2 text-sm font-medium"
                         render={<Link to="/register" />}
