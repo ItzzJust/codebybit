@@ -1,0 +1,21 @@
+* text=auto eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+
+# SVG stays text (diffable)
+*.svg text
+
+# Lockfiles should not produce noisy diffs
+bun.lock -diff
+
+# Generated code — excluded from diffs
+apps/web/src/routeTree.gen.ts linguist-generated=true

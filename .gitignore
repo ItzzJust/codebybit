@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+.output/
+.vinxi/
+.build/
+
+# Turborepo
+.turbo/
+
+# Testing
+coverage/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# TanStack Start / Router
+.tanstack/
+
+# Editors / OS
+.idea/
+.DS_Store
+
+# Logs
+*.log
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc
+.wrangler/
+todos.json
+.tmp

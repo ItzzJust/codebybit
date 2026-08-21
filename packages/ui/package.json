@@ -1,0 +1,55 @@
+{
+  "name": "@codebybit/ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./components/*": {
+      "types": "./src/components/*",
+      "default": "./src/components/*"
+    },
+    "./hooks/*": {
+      "types": "./src/hooks/*",
+      "default": "./src/hooks/*"
+    },
+    "./lib/*": {
+      "types": "./src/lib/*",
+      "default": "./src/lib/*"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.7.0",
+    "@gravity-ui/icons": "^2.21.0",
+    "@lonik/themer": "^0.5.4",
+    "@shadcn/react": "^0.3.0",
+    "@tanstack/react-router": "^1.170.29",
+    "@unpic/react": "^1.0.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^4.4.0",
+    "embla-carousel-react": "^8.6.0",
+    "input-otp": "^1.4.2",
+    "lucide-react": "^1.31.0",
+    "motion": "^13.1.0",
+    "react": "^19.2.6",
+    "react-day-picker": "^10.0.1",
+    "react-dom": "^19.2.6",
+    "react-resizable-panels": "^4.12.2",
+    "recharts": "3.8.0",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^6"
+  }
+}

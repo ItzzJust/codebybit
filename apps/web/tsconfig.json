@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "drizzle.config.ts",
+    "../../oxlint.config.ts",
+    "../../oxfmt.config.ts"
+  ],
+  "compilerOptions": {
+    "types": ["vite/client", "node", "vitest/globals"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@codebybit/ui": ["../../packages/ui/src/index.ts"],
+      "@codebybit/ui/*": ["../../packages/ui/src/*"]
+    },
+    "allowImportingTsExtensions": true
+  }
+}

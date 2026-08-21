@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Decorative grid dots -->
+  <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+    <circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.04)"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+
+  <!-- Accent bar top -->
+  <rect width="1200" height="4" fill="url(#accent)"/>
+
+  <!-- Logo mark (simplified diamond) -->
+  <g transform="translate(100, 230)">
+    <polygon points="60,0 120,60 60,120 0,60" fill="url(#accent)" opacity="0.9"/>
+    <polygon points="60,20 100,60 60,100 20,60" fill="#0f172a"/>
+    <polygon points="60,30 90,60 60,90 30,60" fill="url(#accent)" opacity="0.5"/>
+  </g>
+
+  <!-- Site name -->
+  <text x="260" y="290" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" fill="white" letter-spacing="-2">
+    CodeByBit
+  </text>
+
+  <!-- Tagline -->
+  <text x="260" y="345" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="400" fill="rgba(255,255,255,0.6)">
+    The Marketplace for Digital Resources
+  </text>
+
+  <!-- Category pills -->
+  <g transform="translate(260, 390)">
+    <rect x="0" y="0" width="120" height="36" rx="18" fill="rgba(168,85,247,0.15)" stroke="rgba(168,85,247,0.3)" stroke-width="1"/>
+    <text x="60" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#a855f7" text-anchor="middle">Minecraft</text>
+
+    <rect x="135" y="0" width="100" height="36" rx="18" fill="rgba(99,102,241,0.15)" stroke="rgba(99,102,241,0.3)" stroke-width="1"/>
+    <text x="185" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#6366f1" text-anchor="middle">Roblox</text>
+
+    <rect x="250" y="0" width="120" height="36" rx="18" fill="rgba(34,197,94,0.15)" stroke="rgba(34,197,94,0.3)" stroke-width="1"/>
+    <text x="310" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#22c55e" text-anchor="middle">Websites</text>
+
+    <rect x="385" y="0" width="110" height="36" rx="18" fill="rgba(59,130,246,0.15)" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+    <text x="440" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#3b82f6" text-anchor="middle">Discord</text>
+  </g>
+
+  <!-- Accent bar bottom -->
+  <rect y="626" width="1200" height="4" fill="url(#accent)"/>
+</svg>
