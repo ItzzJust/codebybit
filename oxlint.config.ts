@@ -6,6 +6,11 @@ import tanstack from "ultracite/oxlint/tanstack";
 import tanstackJsPlugins from "ultracite/oxlint/tanstack/js-plugins";
 import vitest from "ultracite/oxlint/vitest";
 
+// ultracite's react config declares `react/react-compiler` which was removed
+// in oxlint 1.79. Strip it so the config parses cleanly.
+const { "react/react-compiler": _, ...patchedReactRules } = react.rules ?? {};
+const patchedReact = { ...react, rules: patchedReactRules };
+
 // oxlint's JS plugin bridge only loads plugins installed in this repo.
 // `github` is intentionally dropped here, so its rules must be dropped too —
 // keeping rules that reference a plugin that is never registered breaks the
@@ -37,7 +42,7 @@ const selectedJsPlugins = {
 export default defineConfig({
   extends: [
     core,
-    react,
+    patchedReact,
     tanstack,
     vitest,
     tanstackJsPlugins,

@@ -2,7 +2,7 @@
 
 import { EASE_OUT } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { m, useInView, useReducedMotion } from "motion/react";
 import type { Transition } from "motion/react";
 import { useRef } from "react";
 import type { ElementType, ReactNode } from "react";
@@ -86,7 +86,7 @@ export function TextReveal({
                     y: { type: "spring" as const, ...s, delay: d },
                   };
               return (
-                <motion.span
+                <m.span
                   key={unitKey}
                   initial={initial}
                   animate={animate}
@@ -97,7 +97,7 @@ export function TextReveal({
                   {split === "word" && i < units.length - 1 ? (
                     <span className="inline-block">&nbsp;</span>
                   ) : null}
-                </motion.span>
+                </m.span>
               );
             })}
           </span>

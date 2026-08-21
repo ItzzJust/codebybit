@@ -7,7 +7,7 @@ import {
   SPRING_SWAP,
 } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import type { HTMLMotionProps, Variants } from "motion/react";
 import { useLayoutEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
@@ -218,7 +218,7 @@ export function ActionSwapText({
           {/* Letters are decorative fragments; readers get the whole label. */}
           <span className="sr-only">{label}</span>
           <AnimatePresence initial={false}>
-            <motion.span
+            <m.span
               key={`cascade-${value}`}
               aria-hidden
               initial="initial"
@@ -227,7 +227,7 @@ export function ActionSwapText({
               className="absolute top-0 left-0 inline-block whitespace-pre"
             >
               {[...label].map((char, i) => (
-                <motion.span
+                <m.span
                   // biome-ignore lint/suspicious/noArrayIndexKey: position is the slot identity — the letter at a position is exactly what rolls.
                   key={i}
                   custom={i * CASCADE_STAGGER}
@@ -235,14 +235,14 @@ export function ActionSwapText({
                   className="inline-block whitespace-pre will-change-[opacity,filter,transform]"
                 >
                   {char}
-                </motion.span>
+                </m.span>
               ))}
-            </motion.span>
+            </m.span>
           </AnimatePresence>
         </>
       ) : (
         <AnimatePresence initial={false}>
-          <motion.span
+          <m.span
             key={`${animation}-${value}`}
             variants={TEXT_VARIANTS[coreAnimation]}
             initial={reduce ? false : "initial"}
@@ -255,7 +255,7 @@ export function ActionSwapText({
             className="absolute top-0 left-0 inline-block will-change-[opacity,filter,transform]"
           >
             {children}
-          </motion.span>
+          </m.span>
         </AnimatePresence>
       )}
     </span>
@@ -281,7 +281,7 @@ export function ActionSwapIcon({
       )}
     >
       <AnimatePresence mode="popLayout" initial={false}>
-        <motion.span
+        <m.span
           key={`${animation}-${value}`}
           aria-hidden
           variants={ICON_VARIANTS[coreAnimation]}
@@ -295,7 +295,7 @@ export function ActionSwapIcon({
           className="col-start-1 row-start-1 inline-flex items-center justify-center will-change-[opacity,filter,transform]"
         >
           {children}
-        </motion.span>
+        </m.span>
       </AnimatePresence>
     </span>
   );
@@ -343,7 +343,7 @@ export function ActionSwapButton({
       : undefined);
 
   return (
-    <motion.button
+    <m.button
       type="button"
       disabled={disabled}
       whileTap={reduce || disabled ? undefined : { scale: 0.97 }}
@@ -382,6 +382,6 @@ export function ActionSwapButton({
           {activeItem.label}
         </ActionSwapText>
       )}
-    </motion.button>
+    </m.button>
   );
 }

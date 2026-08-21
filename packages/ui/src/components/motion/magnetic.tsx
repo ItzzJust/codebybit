@@ -3,12 +3,7 @@
 import { useHoverCapable } from "@codebybit/ui/hooks/use-hover-capable";
 import { SPRING_MOUSE } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "motion/react";
+import { m, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 import { useRef } from "react";
 import type { ReactNode } from "react";
 
@@ -49,7 +44,7 @@ export function Magnetic({
   };
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
@@ -57,6 +52,6 @@ export function Magnetic({
       className={cn("inline-block", className)}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

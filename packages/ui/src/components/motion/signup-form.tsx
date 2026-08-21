@@ -5,7 +5,7 @@ import { Input } from "@codebybit/ui/components/motion/input";
 import { SPRING_LAYOUT } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import { useCallback, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 
@@ -323,7 +323,7 @@ export function SignUpForm({
 
         <AnimatePresence initial={false}>
           {showStrength ? (
-            <motion.div
+            <m.div
               initial={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
@@ -335,7 +335,7 @@ export function SignUpForm({
                     key={index}
                     className="bg-muted-foreground/20 h-1 flex-1 overflow-hidden rounded-full"
                   >
-                    <motion.span
+                    <m.span
                       initial={false}
                       animate={{ scaleX: index < strength ? 1 : 0 }}
                       transition={reduce ? { duration: 0 } : SPRING_LAYOUT}
@@ -350,7 +350,7 @@ export function SignUpForm({
               <p aria-live="polite" className="text-muted-foreground text-xs">
                 Password strength: {STRENGTH_LABELS[strength]}
               </p>
-            </motion.div>
+            </m.div>
           ) : null}
         </AnimatePresence>
       </div>
@@ -382,7 +382,7 @@ export function SignUpForm({
         />
         <AnimatePresence initial={false}>
           {shownError("terms") ? (
-            <motion.p
+            <m.p
               id={termsErrorId}
               role="alert"
               initial={
@@ -400,7 +400,7 @@ export function SignUpForm({
               className="text-destructive px-1 text-xs"
             >
               {shownError("terms")}
-            </motion.p>
+            </m.p>
           ) : null}
         </AnimatePresence>
       </div>

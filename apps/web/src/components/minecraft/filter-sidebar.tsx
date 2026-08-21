@@ -11,7 +11,7 @@ import {
 } from "@codebybit/ui";
 import { useNavigate, useRouterState, useSearch } from "@tanstack/react-router";
 import { Search, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useMinecraftVersions } from "@/hooks/use-minecraft-versions";
 
@@ -47,8 +47,12 @@ const tagSuggestions = [
 // ---------------------------------------------------------------------------
 
 function toList(value: string[] | string | undefined): string[] {
-  if (Array.isArray(value)) return value;
-  if (typeof value === "string") return [value];
+  if (Array.isArray(value)) {
+    return value;
+  }
+  if (typeof value === "string") {
+    return [value];
+  }
   return [];
 }
 
@@ -57,8 +61,12 @@ function searchEquals(a: ResourceSearch, b: ResourceSearch): boolean {
   for (const key of keys) {
     const aList = toList(a[key]);
     const bList = toList(b[key]);
-    if (aList.length !== bList.length) return false;
-    if (!aList.every((v, i) => v === bList[i])) return false;
+    if (aList.length !== bList.length) {
+      return false;
+    }
+    if (!aList.every((v, i) => v === bList[i])) {
+      return false;
+    }
   }
   return true;
 }
@@ -75,30 +83,41 @@ function SearchInput() {
   const [active, setActive] = useState(false);
   const value = active ? draft : query;
 
-  const setQuery = (value: string | null) => {
-    navigate({
-      replace: true,
-      search: (prev: ResourceSearch) => {
-        const next: ResourceSearch = {};
-        if (value) next.q = value;
-        if (prev.tags && prev.tags.length > 0) next.tags = prev.tags;
-        for (const key of Object.keys(prev)) {
-          if (key !== "q" && key !== "tags") next[key] = prev[key];
-        }
-        return next;
-      },
-      to: ".",
-    });
-  };
+  const setQuery = useCallback(
+    (value: string | null) => {
+      navigate({
+        replace: true,
+        search: (prev: ResourceSearch) => {
+          const next: ResourceSearch = {};
+          if (value) {
+            next.q = value;
+          }
+          if (prev.tags && prev.tags.length > 0) {
+            next.tags = prev.tags;
+          }
+          for (const key of Object.keys(prev)) {
+            if (key !== "q" && key !== "tags") {
+              next[key] = prev[key];
+            }
+          }
+          return next;
+        },
+        to: ".",
+      });
+    },
+    [navigate]
+  );
 
   useEffect(() => {
-    if (!active) return;
+    if (!active) {
+      return;
+    }
     const timer = setTimeout(() => {
       setQuery(draft || null);
       setActive(false);
     }, 300);
     return () => clearTimeout(timer);
-  }, [active, draft]);
+  }, [active, draft, setQuery]);
 
   return (
     <SidebarGroup>
@@ -141,9 +160,13 @@ function TagsFilter() {
       replace: true,
       search: (prev: ResourceSearch) => {
         const next: ResourceSearch = { q: prev.q };
-        if (nextTags && nextTags.length > 0) next.tags = nextTags;
+        if (nextTags && nextTags.length > 0) {
+          next.tags = nextTags;
+        }
         for (const key of Object.keys(prev)) {
-          if (key !== "q" && key !== "tags") next[key] = prev[key];
+          if (key !== "q" && key !== "tags") {
+            next[key] = prev[key];
+          }
         }
         return next;
       },
@@ -161,7 +184,9 @@ function TagsFilter() {
 
   const addTag = (tag: string) => {
     const normalized = tag.trim().toLowerCase();
-    if (!normalized || tags.includes(normalized)) return;
+    if (!normalized || tags.includes(normalized)) {
+      return;
+    }
     setTags([...tags, normalized]);
     setInput("");
     setIsOpen(false);
@@ -211,7 +236,9 @@ function TagsFilter() {
                 e.preventDefault();
                 addTag(input);
               }
-              if (e.key === "Escape") setIsOpen(false);
+              if (e.key === "Escape") {
+                setIsOpen(false);
+              }
             }}
             placeholder="Search or add tags..."
             className="bg-sidebar-accent/50 border-sidebar-border focus-visible:ring-sidebar-ring h-8 text-xs"
@@ -295,7 +322,7 @@ function VersionFilter({
   const { versions, isLoading, error } = useMinecraftVersions();
 
   const options = useMemo(
-    () => versions.map((v) => ({ value: v, label: v })),
+    () => versions.map((v) => ({ label: v, value: v })),
     [versions]
   );
 
@@ -401,7 +428,9 @@ export function FilterSidebar() {
 
   // Drop search params that no longer belong to the active section
   useEffect(() => {
-    if (!activeSection) return;
+    if (!activeSection) {
+      return;
+    }
     const sanitized = sanitizeSearch(search, filters[activeSection]);
     if (!searchEquals(search, sanitized)) {
       navigate({ replace: true, search: sanitized, to: "." });
@@ -420,7 +449,9 @@ export function FilterSidebar() {
       replace: true,
       search: (prev: ResourceSearch) => {
         const next: ResourceSearch = {};
-        if (prev.q) next.q = prev.q;
+        if (prev.q) {
+          next.q = prev.q;
+        }
         return next;
       },
       to: ".",
@@ -443,10 +474,14 @@ export function FilterSidebar() {
         const next: ResourceSearch = { q: prev.q, tags: prev.tags };
         for (const filter of activeFilters) {
           if (filter.key === filterKey) {
-            if (updated.length > 0) next[filter.key] = updated;
+            if (updated.length > 0) {
+              next[filter.key] = updated;
+            }
           } else {
             const values = normalizeList(prev[filter.key]);
-            if (values.length > 0) next[filter.key] = values;
+            if (values.length > 0) {
+              next[filter.key] = values;
+            }
           }
         }
         return next;
@@ -462,10 +497,14 @@ export function FilterSidebar() {
         const next: ResourceSearch = { q: prev.q, tags: prev.tags };
         for (const filter of activeFilters) {
           if (filter.key === "minecraft_version") {
-            if (values.length > 0) next["minecraft_version"] = values;
+            if (values.length > 0) {
+              next["minecraft_version"] = values;
+            }
           } else {
             const vals = normalizeList(prev[filter.key]);
-            if (vals.length > 0) next[filter.key] = vals;
+            if (vals.length > 0) {
+              next[filter.key] = vals;
+            }
           }
         }
         return next;

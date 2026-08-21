@@ -1,12 +1,7 @@
 "use client";
 
 import { cn } from "@codebybit/ui/lib/utils";
-import {
-  AnimatePresence,
-  animate,
-  motion,
-  useReducedMotion,
-} from "motion/react";
+import { AnimatePresence, animate, m, useReducedMotion } from "motion/react";
 import { forwardRef, useEffect, useId, useRef, useState } from "react";
 import type { InputHTMLAttributes, ReactNode } from "react";
 
@@ -171,7 +166,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
 
           {success ? (
-            <motion.svg
+            <m.svg
               viewBox="0 0 24 24"
               fill="none"
               className={cn(
@@ -179,7 +174,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 classNames?.successIcon
               )}
             >
-              <motion.path
+              <m.path
                 d="M5 12.5l4.5 4.5L19 7.5"
                 stroke="currentColor"
                 strokeWidth={2.5}
@@ -189,7 +184,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 0.35, ease: "easeOut" }}
               />
-            </motion.svg>
+            </m.svg>
           ) : rightSlot ? (
             <span
               className={cn(
@@ -204,7 +199,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         <AnimatePresence initial={false}>
           {errorMessage ? (
-            <motion.p
+            <m.p
               id={`${id}-error`}
               role="alert"
               initial={
@@ -225,7 +220,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               )}
             >
               {errorMessage}
-            </motion.p>
+            </m.p>
           ) : null}
         </AnimatePresence>
       </div>

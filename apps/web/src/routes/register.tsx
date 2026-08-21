@@ -7,7 +7,7 @@ import type {
 import { TextReveal } from "@codebybit/ui/components/motion/text-reveal";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Check, Globe, Rocket, Users } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { m, useReducedMotion } from "motion/react";
 import { useState } from "react";
 
 import { authClient } from "@/lib/auth-client";
@@ -96,7 +96,7 @@ function RegisterPage() {
 
           <div className="space-y-4">
             {BENEFITS.map((benefit, i) => (
-              <motion.div
+              <m.div
                 key={benefit.title}
                 initial={reduce ? false : { opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -118,11 +118,11 @@ function RegisterPage() {
                     {benefit.description}
                   </p>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
 
-          <motion.div
+          <m.div
             initial={reduce ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -135,7 +135,7 @@ function RegisterPage() {
               Free to join. No credit card required. Start downloading resources
               immediately.
             </p>
-          </motion.div>
+          </m.div>
         </div>
 
         <p className="text-muted-foreground text-xs">
@@ -145,7 +145,7 @@ function RegisterPage() {
 
       {/* Right: Form */}
       <div className="flex flex-1 items-center justify-center px-4 py-12 sm:px-8">
-        <motion.div
+        <m.div
           initial={reduce ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -184,7 +184,7 @@ function RegisterPage() {
               Terms of Service
             </span>
           </p>
-        </motion.div>
+        </m.div>
       </div>
     </main>
   );

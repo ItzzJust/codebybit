@@ -3,7 +3,7 @@
 import { StatefulButton } from "@codebybit/ui/components/motion/button";
 import { EASE_OUT } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import { useId } from "react";
 import type { ReactNode } from "react";
 
@@ -118,7 +118,7 @@ export function AuthForm({
 
       <AnimatePresence initial={false}>
         {errorMessage ? (
-          <motion.p
+          <m.p
             id={formErrorId}
             role="alert"
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
@@ -128,7 +128,7 @@ export function AuthForm({
             className="border-destructive/30 bg-destructive/10 text-destructive rounded-2xl border px-3 py-2 text-xs"
           >
             {errorMessage}
-          </motion.p>
+          </m.p>
         ) : null}
       </AnimatePresence>
 

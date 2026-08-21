@@ -16,7 +16,7 @@ import {
   Sparkles,
   Wand2,
 } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { m, useReducedMotion } from "motion/react";
 import { useMemo, useState } from "react";
 
 import { seo } from "@/lib/seo";
@@ -173,14 +173,14 @@ function CreditsPage() {
         </div>
 
         <div className="mx-auto max-w-3xl text-center">
-          <motion.p
+          <m.p
             initial={reduce ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="text-muted-foreground mb-4 text-sm font-medium tracking-wider uppercase"
           >
             Acknowledgements
-          </motion.p>
+          </m.p>
 
           <TextReveal
             text="Credits"
@@ -190,7 +190,7 @@ function CreditsPage() {
             delay={0.15}
           />
 
-          <motion.p
+          <m.p
             initial={reduce ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
@@ -199,13 +199,13 @@ function CreditsPage() {
             External resources, artwork, and the technologies that power
             CodeByBit. Thanks to the creators and communities who make these
             available.
-          </motion.p>
+          </m.p>
         </div>
       </section>
 
       {/* Filter pills */}
       <div className="mx-auto max-w-5xl px-4 pt-8 pb-2">
-        <motion.div
+        <m.div
           initial={reduce ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -214,7 +214,7 @@ function CreditsPage() {
           aria-label="Filter credits"
         >
           {CATEGORIES.map((cat) => (
-            <motion.button
+            <m.button
               key={cat}
               variants={pillVariants}
               animate={active === cat ? "active" : "inactive"}
@@ -231,16 +231,16 @@ function CreditsPage() {
               )}
             >
               {cat}
-            </motion.button>
+            </m.button>
           ))}
-        </motion.div>
+        </m.div>
       </div>
 
       {/* Cards grid */}
       <section className="mx-auto max-w-5xl px-4 py-8">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((credit, i) => (
-            <motion.div
+            <m.div
               key={credit.href}
               custom={i}
               initial={reduce ? "visible" : "hidden"}
@@ -279,7 +279,7 @@ function CreditsPage() {
                   {credit.source}
                 </span>
               </Link>
-            </motion.div>
+            </m.div>
           ))}
         </div>
 

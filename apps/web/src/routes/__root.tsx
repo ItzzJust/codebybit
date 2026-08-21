@@ -1,8 +1,11 @@
 import {
+  CommandMenu,
+  ErrorBoundary,
+  MotionProvider,
   Navbar,
   NotFound,
   SidebarProvider,
-  ToastProvider,
+  Toaster,
   TooltipProvider,
 } from "@codebybit/ui";
 import { ThemeProvider } from "@lonik/themer";
@@ -23,12 +26,17 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider>
           <SidebarProvider>
-            <ToastProvider>
+            <Toaster>
               <TooltipProvider>
-                <Navbar />
-                <div className="pt-16">{children}</div>
+                <MotionProvider>
+                  <CommandMenu />
+                  <Navbar />
+                  <ErrorBoundary>
+                    <div className="pt-16">{children}</div>
+                  </ErrorBoundary>
+                </MotionProvider>
               </TooltipProvider>
-            </ToastProvider>
+            </Toaster>
           </SidebarProvider>
         </ThemeProvider>
         <TanStackDevtools

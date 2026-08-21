@@ -3,13 +3,13 @@ import { createServerFn } from "@tanstack/react-start";
 // Mojang API response shape
 interface MojangVersionManifest {
   latest: { release: string; snapshot: string };
-  versions: Array<{
+  versions: {
     id: string;
     type: "release" | "snapshot" | "old_beta" | "old_alpha";
     url: string;
     releaseTime: string;
     // ... other fields omitted for brevity
-  }>;
+  }[];
 }
 
 const VERSION_MANIFEST_URL =
@@ -41,7 +41,9 @@ async function fetchVersions(): Promise<string[]> {
 }
 
 function isCacheValid(): boolean {
-  if (!cache) return false;
+  if (!cache) {
+    return false;
+  }
   return Date.now() - cache.timestamp < CACHE_TTL_MS;
 }
 
@@ -49,24 +51,24 @@ export const fetchMinecraftVersions = createServerFn({ method: "GET" }).handler(
   async () => {
     // Return cached data if still fresh
     if (isCacheValid()) {
-      return { versions: cache!.data, lastUpdated: cache!.timestamp };
+      return { lastUpdated: cache!.timestamp, versions: cache!.data };
     }
 
     try {
       const versions = await fetchVersions();
       cache = { data: versions, timestamp: Date.now() };
-      return { versions, lastUpdated: cache.timestamp };
+      return { lastUpdated: cache.timestamp, versions };
     } catch (error) {
       // On error, return stale cache if available
       if (cache) {
-        return { versions: cache.data, lastUpdated: cache.timestamp };
+        return { lastUpdated: cache.timestamp, versions: cache.data };
       }
 
       const message =
         error instanceof Error
           ? error.message
           : "Failed to fetch Minecraft versions";
-      throw new Error(message);
+      throw new Error(message, { cause: error });
     }
   }
 );

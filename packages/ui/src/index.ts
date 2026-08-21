@@ -99,10 +99,13 @@ export { SignInForm } from "./components/motion/signin-form";
 export { SignUpForm, passwordStrength } from "./components/motion/signup-form";
 export { TextReveal } from "./components/motion/text-reveal";
 export { ThemeToggle, useThemeToggle } from "./components/motion/theme-toggle";
+export { MotionProvider } from "./components/motion/motion-provider";
 
 // custom components
 export { CategoryCard } from "./components/custom/category-card";
 export type { CategoryCardProps } from "./components/custom/category-card";
+export { CommandMenu } from "./components/custom/command-menu";
+export { ErrorBoundary } from "./components/custom/error-boundary";
 export { Logo } from "./components/custom/logo";
 export { Navbar } from "./components/custom/navbar";
 export { default as NotFound } from "./components/custom/not-found";

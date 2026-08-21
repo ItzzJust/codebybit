@@ -3,7 +3,7 @@
 import { useHoverCapable } from "@codebybit/ui/hooks/use-hover-capable";
 import { EASE_OUT, SPRING_PRESS } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import type { HTMLMotionProps } from "motion/react";
 import { forwardRef, useCallback, useRef, useState } from "react";
 import type { PointerEvent, ReactNode } from "react";
@@ -96,7 +96,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     return (
-      <motion.button
+      <m.button
         ref={ref}
         type="button"
         whileTap={reduce ? undefined : { scale: pressScale }}
@@ -118,7 +118,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
             <AnimatePresence>
               {ripples.map((r) => (
-                <motion.span
+                <m.span
                   key={r.id}
                   className="absolute rounded-full bg-current"
                   style={{
@@ -142,7 +142,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           </span>
         ) : null}
         {children}
-      </motion.button>
+      </m.button>
     );
   }
 );
@@ -163,7 +163,7 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
     const canHover = useHoverCapable();
 
     return (
-      <motion.a
+      <m.a
         ref={ref}
         whileTap={reduce ? undefined : { scale: pressScale }}
         whileHover={reduce || !canHover ? undefined : { scale: 1.02 }}
@@ -178,7 +178,7 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
         {...rest}
       >
         {children}
-      </motion.a>
+      </m.a>
     );
   }
 );

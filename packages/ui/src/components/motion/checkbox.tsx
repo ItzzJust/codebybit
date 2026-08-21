@@ -2,7 +2,7 @@
 
 import { EASE_OUT, SPRING_PRESS } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import { useId } from "react";
 
 const CHECK_PATH = "M5 13l4 4L19 7";
@@ -47,7 +47,7 @@ export function Checkbox({
         className
       )}
     >
-      <motion.button
+      <m.button
         id={id}
         type="button"
         role="checkbox"
@@ -72,7 +72,7 @@ export function Checkbox({
       >
         <AnimatePresence initial={false}>
           {showMark ? (
-            <motion.svg
+            <m.svg
               key={indeterminate ? "indeterminate" : "checked"}
               width="12"
               height="12"
@@ -95,7 +95,7 @@ export function Checkbox({
               aria-hidden
             >
               <title>{indeterminate ? "Partially selected" : "Selected"}</title>
-              <motion.path
+              <m.path
                 d={path}
                 initial={reduce ? { pathLength: 1 } : { pathLength: 0 }}
                 animate={{ pathLength: 1 }}
@@ -109,10 +109,10 @@ export function Checkbox({
                       }
                 }
               />
-            </motion.svg>
+            </m.svg>
           ) : null}
         </AnimatePresence>
-      </motion.button>
+      </m.button>
       {label ? (
         <span
           className={cn(

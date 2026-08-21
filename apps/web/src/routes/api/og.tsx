@@ -11,7 +11,9 @@ const OG_HEIGHT = 630;
 let cachedFont: ArrayBuffer | null = null;
 
 async function getInterFont(): Promise<ArrayBuffer> {
-  if (cachedFont) return cachedFont;
+  if (cachedFont) {
+    return cachedFont;
+  }
 
   const fontUrl =
     "https://fonts.gstatic.com/s/inter/v18/UcCo3FwrK3iLTcviYwYZ90OmSqEpJpE.woff";
@@ -26,15 +28,17 @@ async function getInterFont(): Promise<ArrayBuffer> {
 /** Escape text for safe display in the OG template */
 function escapeText(text: string): string {
   return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 }
 
 /** Truncate text to fit within a character limit */
 function truncate(text: string, maxLength: number): string {
-  if (text.length <= maxLength) return text;
+  if (text.length <= maxLength) {
+    return text;
+  }
   return `${text.slice(0, maxLength - 1)}…`;
 }
 

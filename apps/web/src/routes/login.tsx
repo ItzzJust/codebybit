@@ -7,7 +7,7 @@ import type {
 import { TextReveal } from "@codebybit/ui/components/motion/text-reveal";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Gamepad2, Layers, Sparkles } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { m, useReducedMotion } from "motion/react";
 import { useState } from "react";
 
 import { authClient } from "@/lib/auth-client";
@@ -95,7 +95,7 @@ function LoginPage() {
 
           <div className="space-y-4">
             {FEATURES.map((feature, i) => (
-              <motion.div
+              <m.div
                 key={feature.title}
                 initial={reduce ? false : { opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -117,7 +117,7 @@ function LoginPage() {
                     {feature.description}
                   </p>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
@@ -129,7 +129,7 @@ function LoginPage() {
 
       {/* Right: Form */}
       <div className="flex flex-1 items-center justify-center px-4 py-12 sm:px-8">
-        <motion.div
+        <m.div
           initial={reduce ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -161,7 +161,7 @@ function LoginPage() {
               </p>
             }
           />
-        </motion.div>
+        </m.div>
       </div>
     </main>
   );

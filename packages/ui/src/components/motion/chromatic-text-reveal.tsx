@@ -3,7 +3,7 @@
 
 import { EASE_IN_OUT, EASE_OUT } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { m, useInView, useReducedMotion } from "motion/react";
 import type { MotionStyle, UseInViewOptions } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -144,7 +144,7 @@ export function ChromaticTextReveal({
           ))}
           {/* Moving a clipped text gradient defines this effect. Paint
               containment bounds that deliberate repaint to the active word. */}
-          <motion.span
+          <m.span
             key={`${activeWord}-${activeIndex}`}
             aria-hidden
             initial={
@@ -190,7 +190,7 @@ export function ChromaticTextReveal({
             }
           >
             {activeWord}
-          </motion.span>
+          </m.span>
           <span className="sr-only">{activeWord}</span>
         </span>
       ) : null}

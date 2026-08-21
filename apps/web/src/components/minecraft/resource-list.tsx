@@ -8,8 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@codebybit/ui";
-import { useNavigate, useRouterState, useSearch } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
+import {
+  useNavigate,
+  useRouterState,
+  useSearch,
+  Link,
+} from "@tanstack/react-router";
 import { Download, ExternalLink } from "lucide-react";
 
 import { formatDownloads, formatPrice } from "@/lib/formatting";

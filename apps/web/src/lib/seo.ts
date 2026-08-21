@@ -25,8 +25,8 @@ export interface SeoOptions {
  */
 function buildOgImageUrl(title: string, description: string): string {
   const params = new URLSearchParams({
-    title,
     description,
+    title,
   });
   return `${SITE_URL}${OG_API_PATH}?${params.toString()}`;
 }
@@ -53,43 +53,43 @@ export function seo({
   const canonicalUrl = `${SITE_URL}${path}`;
   const imageUrl = image?.startsWith("http")
     ? image
-    : image
+    : (image
       ? `${SITE_URL}${image}`
-      : buildOgImageUrl(fullTitle, description);
+      : buildOgImageUrl(fullTitle, description));
 
   return {
+    links: [
+      { href: canonicalUrl, rel: "canonical" },
+      { href: "/favicon.ico", rel: "icon" },
+      { href: "/manifest.json", rel: "manifest" },
+      { href: "/favicon.ico", rel: "apple-touch-icon" },
+    ],
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { content: "width=device-width, initial-scale=1", name: "viewport" },
       { title: fullTitle },
-      { name: "description", content: description },
+      { content: description, name: "description" },
 
       // Open Graph
-      { property: "og:type", content: type },
-      { property: "og:title", content: fullTitle },
-      { property: "og:description", content: description },
-      { property: "og:image", content: imageUrl },
-      { property: "og:url", content: canonicalUrl },
-      { property: "og:site_name", content: SITE_NAME },
-      { property: "og:locale", content: "en_US" },
+      { content: type, property: "og:type" },
+      { content: fullTitle, property: "og:title" },
+      { content: description, property: "og:description" },
+      { content: imageUrl, property: "og:image" },
+      { content: canonicalUrl, property: "og:url" },
+      { content: SITE_NAME, property: "og:site_name" },
+      { content: "en_US", property: "og:locale" },
 
       // Twitter / X
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: fullTitle },
-      { name: "twitter:description", content: description },
-      { name: "twitter:image", content: imageUrl },
+      { content: "summary_large_image", name: "twitter:card" },
+      { content: fullTitle, name: "twitter:title" },
+      { content: description, name: "twitter:description" },
+      { content: imageUrl, name: "twitter:image" },
 
       // Misc
-      { name: "theme-color", content: "#000000" },
-      { name: "robots", content: "index, follow" },
-      { name: "author", content: SITE_NAME },
-      { name: "application-name", content: SITE_NAME },
-    ],
-    links: [
-      { rel: "canonical", href: canonicalUrl },
-      { rel: "icon", href: "/favicon.ico" },
-      { rel: "manifest", href: "/manifest.json" },
-      { rel: "apple-touch-icon", href: "/favicon.ico" },
+      { content: "#000000", name: "theme-color" },
+      { content: "index, follow", name: "robots" },
+      { content: SITE_NAME, name: "author" },
+      { content: SITE_NAME, name: "application-name" },
     ],
   };
 }
@@ -102,37 +102,37 @@ export function rootSeo() {
   const rootOgUrl = buildOgImageUrl(SITE_NAME, SITE_DESCRIPTION);
 
   return {
+    links: [
+      { href: "/favicon.ico", rel: "icon" },
+      { href: "/manifest.json", rel: "manifest" },
+      { href: "/favicon.ico", rel: "apple-touch-icon" },
+    ],
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { content: "width=device-width, initial-scale=1", name: "viewport" },
       { title: SITE_NAME },
-      { name: "description", content: SITE_DESCRIPTION },
+      { content: SITE_DESCRIPTION, name: "description" },
 
       // Open Graph defaults
-      { property: "og:type", content: "website" },
-      { property: "og:title", content: SITE_NAME },
-      { property: "og:description", content: SITE_DESCRIPTION },
-      { property: "og:image", content: rootOgUrl },
-      { property: "og:url", content: SITE_URL },
-      { property: "og:site_name", content: SITE_NAME },
-      { property: "og:locale", content: "en_US" },
+      { content: "website", property: "og:type" },
+      { content: SITE_NAME, property: "og:title" },
+      { content: SITE_DESCRIPTION, property: "og:description" },
+      { content: rootOgUrl, property: "og:image" },
+      { content: SITE_URL, property: "og:url" },
+      { content: SITE_NAME, property: "og:site_name" },
+      { content: "en_US", property: "og:locale" },
 
       // Twitter / X defaults
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: SITE_NAME },
-      { name: "twitter:description", content: SITE_DESCRIPTION },
-      { name: "twitter:image", content: rootOgUrl },
+      { content: "summary_large_image", name: "twitter:card" },
+      { content: SITE_NAME, name: "twitter:title" },
+      { content: SITE_DESCRIPTION, name: "twitter:description" },
+      { content: rootOgUrl, name: "twitter:image" },
 
       // Misc
-      { name: "theme-color", content: "#000000" },
-      { name: "robots", content: "index, follow" },
-      { name: "author", content: SITE_NAME },
-      { name: "application-name", content: SITE_NAME },
-    ],
-    links: [
-      { rel: "icon", href: "/favicon.ico" },
-      { rel: "manifest", href: "/manifest.json" },
-      { rel: "apple-touch-icon", href: "/favicon.ico" },
+      { content: "#000000", name: "theme-color" },
+      { content: "index, follow", name: "robots" },
+      { content: SITE_NAME, name: "author" },
+      { content: SITE_NAME, name: "application-name" },
     ],
   };
 }

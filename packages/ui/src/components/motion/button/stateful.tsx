@@ -2,7 +2,7 @@
 
 import { EASE_OUT, SPRING_SWAP } from "@codebybit/ui/lib/ease";
 import { Check, Loader2, X } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import type { Variants } from "motion/react";
 import { forwardRef, useLayoutEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
@@ -63,7 +63,7 @@ const ICON_VARIANTS: Variants = {
 function IconSlot({ keyId, children }: { keyId: string; children: ReactNode }) {
   const reduce = useReducedMotion();
   return (
-    <motion.span
+    <m.span
       key={keyId}
       variants={ICON_VARIANTS}
       initial={reduce ? { opacity: 0 } : "initial"}
@@ -73,7 +73,7 @@ function IconSlot({ keyId, children }: { keyId: string; children: ReactNode }) {
       className="inline-grid shrink-0 place-items-center overflow-hidden"
     >
       {children}
-    </motion.span>
+    </m.span>
   );
 }
 
@@ -96,7 +96,7 @@ function TextSlot({ value, children }: { value: string; children: ReactNode }) {
   });
 
   return (
-    <motion.span
+    <m.span
       initial={false}
       animate={{ width }}
       transition={reduce ? { duration: 0 } : SPRING_SWAP}
@@ -124,7 +124,7 @@ function TextSlot({ value, children }: { value: string; children: ReactNode }) {
         <>
           <span className="sr-only">{label}</span>
           <AnimatePresence initial={false}>
-            <motion.span
+            <m.span
               key={`cascade-${value}`}
               aria-hidden
               initial="initial"
@@ -133,7 +133,7 @@ function TextSlot({ value, children }: { value: string; children: ReactNode }) {
               className="absolute top-0 left-0 inline-block whitespace-pre"
             >
               {[...label].map((char, index) => (
-                <motion.span
+                <m.span
                   // biome-ignore lint/suspicious/noArrayIndexKey: position is the slot identity.
                   key={index}
                   custom={index * CASCADE_STAGGER}
@@ -141,14 +141,14 @@ function TextSlot({ value, children }: { value: string; children: ReactNode }) {
                   className="inline-block whitespace-pre will-change-[opacity,filter,transform]"
                 >
                   {char}
-                </motion.span>
+                </m.span>
               ))}
-            </motion.span>
+            </m.span>
           </AnimatePresence>
         </>
       ) : (
         <AnimatePresence initial={false}>
-          <motion.span
+          <m.span
             key={`text-${value}`}
             initial={
               reduce ? { opacity: 0 } : { filter: ROLL_BLUR, opacity: 0, y: 14 }
@@ -167,10 +167,10 @@ function TextSlot({ value, children }: { value: string; children: ReactNode }) {
             className="absolute top-0 left-0 inline-block will-change-[opacity,filter,transform]"
           >
             {children}
-          </motion.span>
+          </m.span>
         </AnimatePresence>
       )}
-    </motion.span>
+    </m.span>
   );
 }
 

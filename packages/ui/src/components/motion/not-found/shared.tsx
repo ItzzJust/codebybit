@@ -3,7 +3,7 @@
 import { useHoverCapable } from "@codebybit/ui/hooks/use-hover-capable";
 import { SPRING_PRESS } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
-import { motion, useReducedMotion } from "motion/react";
+import { m, useReducedMotion } from "motion/react";
 
 export interface NotFoundProps {
   className?: string;
@@ -53,7 +53,7 @@ export function NotFoundActions({
         className
       )}
     >
-      <motion.a
+      <m.a
         href={homeHref}
         whileTap={whileTap}
         whileHover={whileHover}
@@ -61,8 +61,8 @@ export function NotFoundActions({
         className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-medium transition-colors select-none"
       >
         {homeLabel}
-      </motion.a>
-      <motion.a
+      </m.a>
+      <m.a
         href={browseHref}
         whileTap={whileTap}
         whileHover={whileHover}
@@ -70,7 +70,7 @@ export function NotFoundActions({
         className="border-border bg-card text-foreground hover:bg-primary/5 inline-flex h-11 items-center justify-center rounded-full border px-6 text-sm font-medium transition-colors select-none"
       >
         {browseLabel}
-      </motion.a>
+      </m.a>
     </div>
   );
 }

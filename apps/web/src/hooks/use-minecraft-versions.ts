@@ -31,9 +31,9 @@ export function useMinecraftVersions(): UseMinecraftVersionsResult {
           cachedVersions = result.versions;
           return result.versions;
         })
-        .catch((err) => {
+        .catch((error) => {
           fetchPromise = null; // Allow retry on failure
-          throw err;
+          throw error;
         });
     }
 
@@ -42,13 +42,13 @@ export function useMinecraftVersions(): UseMinecraftVersionsResult {
         setVersions(v);
         setIsLoading(false);
       })
-      .catch((err) => {
+      .catch((error) => {
         setError(
-          err instanceof Error ? err.message : "Failed to load versions"
+          error instanceof Error ? error.message : "Failed to load versions"
         );
         setIsLoading(false);
       });
   }, []);
 
-  return { versions, isLoading, error };
+  return { error, isLoading, versions };
 }
