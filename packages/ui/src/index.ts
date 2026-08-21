@@ -93,6 +93,8 @@ export { MagneticButton, StatefulButton } from "./components/motion/button";
 export { ChromaticTextReveal } from "./components/motion/chromatic-text-reveal";
 export { Magnetic } from "./components/motion/magnetic";
 export * from "./components/motion/not-found";
+export { AuthForm } from "./components/motion/auth-form";
+export type { AuthFormProps, AuthStatus } from "./components/motion/auth-form";
 export { SignInForm } from "./components/motion/signin-form";
 export { SignUpForm, passwordStrength } from "./components/motion/signup-form";
 export { TextReveal } from "./components/motion/text-reveal";

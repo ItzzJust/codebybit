@@ -1,0 +1,56 @@
+# Shadscan — audits shadcn/ui codebases for accessibility, interaction,
+# state, form, and production-polish issues.
+#
+# Docs: https://www.shadscan.com/docs
+# Source: https://github.com/TheOrcDev/shadscan
+
+name: Shadscan
+
+on:
+  # Scans the PR's changed files and posts a sticky summary comment with
+  # findings relative to the merge base of the target branch.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  # Scans `main` on every push to track the audit-score trend and catch
+  # regressions that slipped past PR review.
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+# Cancels any in-flight scan for the same PR (or branch, on push) the moment
+# a new commit arrives, so reviewers only ever see the latest run.
+concurrency:
+  group: shadscan-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shadscan:
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 gives Shadscan the full git history it needs to find
+      # the merge base with the target branch. Without it a shallow checkout
+      # has no merge base, so PR runs can't compare against the base and
+      # fall back to reporting every issue (pre-existing ones included)
+      # instead of only the ones the PR introduced.
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: TheOrcDev/shadscan@v0.17.0
+        # Advisory by default: Shadscan reports findings on every PR — a
+        # summary comment with the score, category breakdown, and findings —
+        # but never fails the check, so it won't block a teammate's PR on
+        # day one. When your team trusts the signal, graduate the gate:
+        # uncomment fail-under below to fail the check when the score drops.
+        # Full reference: https://www.shadscan.com/docs
+        with:
+          fail-under: "80" # Fail CI when audit score drops below this (0-100)
+          create-issue: "true" # Auto-create a GitHub issue when the score drops
+          # format: prompt           # Output format: "human" (default) | "json" | "prompt"
+          # category: accessibility  # Scan a single category instead of all
+          # --check-ui <url>         # Render-check a live URL (requires Chromium)
+          # --route <path>           # Additional route to check (repeatable, max 10)

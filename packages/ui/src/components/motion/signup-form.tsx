@@ -1,17 +1,17 @@
 "use client";
-// beui.dev/components/blocks/signup-form
 
-import { StatefulButton } from "@codebybit/ui/components/motion/button";
 import { Checkbox } from "@codebybit/ui/components/motion/checkbox";
 import { Input } from "@codebybit/ui/components/motion/input";
-import { EASE_OUT, SPRING_LAYOUT } from "@codebybit/ui/lib/ease";
+import { SPRING_LAYOUT } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useCallback, useId, useMemo, useState } from "react";
-import type { FormEvent, ReactNode } from "react";
+import { useCallback, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 
-export type SignUpStatus = "idle" | "loading" | "success" | "error";
+import { AuthForm, type AuthStatus } from "./auth-form";
+
+export type { AuthStatus as SignUpStatus };
 
 export interface SignUpValues {
   name: string;
@@ -45,7 +45,7 @@ export interface SignUpFormProps {
   /** Replace the built-in rules — return a message per invalid field. */
   validate?: (values: SignUpValues) => SignUpErrors;
   /** Controlled submit state. Omit to let the form track it. */
-  status?: SignUpStatus;
+  status?: AuthStatus;
   /** Form-level failure message, shown above the submit button. */
   errorMessage?: string;
   title?: ReactNode;
@@ -167,7 +167,6 @@ export function SignUpForm({
   classNames,
 }: SignUpFormProps) {
   const reduce = useReducedMotion();
-  const baseId = useId();
 
   const controlled = valuesProp !== undefined;
   const [internalValues, setInternalValues] = useState<SignUpValues>({
@@ -176,15 +175,11 @@ export function SignUpForm({
   });
   const values = controlled ? valuesProp : internalValues;
 
-  const [internalStatus, setInternalStatus] = useState<SignUpStatus>("idle");
+  const [internalStatus, setInternalStatus] = useState<AuthStatus>("idle");
   const status = statusProp ?? internalStatus;
 
   const [revealPassword, setRevealPassword] = useState(false);
 
-  // "Reward early, punish late": errors are computed on every change, but a
-  // field only *shows* its error once it has been blurred (or submit touched
-  // everything). So a first entry is never flagged mid-typing, while a field
-  // already in error clears the moment it becomes valid.
   const [touched, setTouched] = useState<
     Partial<Record<keyof SignUpValues, boolean>>
   >({});
@@ -214,11 +209,9 @@ export function SignUpForm({
     setTouched((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
   }, []);
 
-  /** Error to render for a field — hidden until the field has been touched. */
   const shownError = (key: keyof SignUpValues) =>
     touched[key] ? errors[key] : undefined;
 
-  /** Success check draws only once a touched field is non-empty and valid. */
   const isValid = (key: keyof SignUpValues) =>
     Boolean(touched[key]) && !errors[key] && Boolean(values[key]);
 
@@ -226,7 +219,7 @@ export function SignUpForm({
   const showStrength = strengthMeter && values.password.length > 0;
   const isSubmitting = status === "loading";
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setTouched({
@@ -259,152 +252,122 @@ export function SignUpForm({
     }
   };
 
-  const termsErrorId = `${baseId}-terms-error`;
-  const formErrorId = `${baseId}-form-error`;
+  const termsErrorId = "signup-terms-error";
 
   return (
-    <form
-      noValidate
+    <AuthForm
+      title={title}
+      description={description}
+      submitLabel={submitLabel}
+      loadingText="Creating account"
+      successText="Account created"
+      status={status}
+      errorMessage={errorMessage}
       onSubmit={handleSubmit}
-      className={cn(
-        "border-border flex w-full max-w-sm flex-col gap-5 rounded-3xl border p-6",
-        className,
-        classNames?.root
-      )}
+      footer={footer}
+      className={className}
+      classNames={classNames}
     >
-      {title || description ? (
-        <div className={cn("flex flex-col gap-1", classNames?.header)}>
-          {title ? (
-            <h2
-              className={cn(
-                "text-foreground text-xl font-semibold tracking-tight",
-                classNames?.title
-              )}
-            >
-              {title}
-            </h2>
-          ) : null}
-          {description ? (
-            <p
-              className={cn(
-                "text-muted-foreground text-sm",
-                classNames?.description
-              )}
-            >
-              {description}
-            </p>
-          ) : null}
-        </div>
-      ) : null}
+      <Input
+        label="Name"
+        autoComplete="name"
+        placeholder="Ada Lovelace"
+        leftIcon={<User />}
+        disabled={isSubmitting}
+        value={values.name}
+        onChange={(next) => setValue("name", next)}
+        onBlur={() => touch("name")}
+        error={shownError("name")}
+        success={isValid("name")}
+      />
 
-      <div className={cn("flex flex-col gap-4", classNames?.fields)}>
+      <Input
+        label="Email"
+        type="email"
+        inputMode="email"
+        autoComplete="email"
+        placeholder="you@example.com"
+        leftIcon={<Mail />}
+        disabled={isSubmitting}
+        value={values.email}
+        onChange={(next) => setValue("email", next)}
+        onBlur={() => touch("email")}
+        error={shownError("email")}
+        success={isValid("email")}
+      />
+
+      <div className="flex flex-col gap-2">
         <Input
-          label="Name"
-          autoComplete="name"
-          placeholder="Ada Lovelace"
-          leftIcon={<User />}
-          disabled={isSubmitting}
-          value={values.name}
-          onChange={(next) => setValue("name", next)}
-          onBlur={() => touch("name")}
-          error={shownError("name")}
-          success={isValid("name")}
-        />
-
-        <Input
-          label="Email"
-          type="email"
-          inputMode="email"
-          autoComplete="email"
-          placeholder="you@example.com"
-          leftIcon={<Mail />}
-          disabled={isSubmitting}
-          value={values.email}
-          onChange={(next) => setValue("email", next)}
-          onBlur={() => touch("email")}
-          error={shownError("email")}
-          success={isValid("email")}
-        />
-
-        <div className="flex flex-col gap-2">
-          <Input
-            label="Password"
-            type={revealPassword ? "text" : "password"}
-            autoComplete="new-password"
-            placeholder="At least 8 characters"
-            leftIcon={<Lock />}
-            rightIcon={
-              <button
-                type="button"
-                disabled={isSubmitting}
-                onClick={() => setRevealPassword((prev) => !prev)}
-                aria-label={revealPassword ? "Hide password" : "Show password"}
-                className="text-muted-foreground hover:text-foreground focus-visible:text-foreground transition-colors outline-none"
-              >
-                {revealPassword ? <EyeOff /> : <Eye />}
-              </button>
-            }
-            disabled={isSubmitting}
-            value={values.password}
-            onChange={(next) => setValue("password", next)}
-            onBlur={() => touch("password")}
-            error={shownError("password")}
-          />
-
-          <AnimatePresence initial={false}>
-            {showStrength ? (
-              <motion.div
-                initial={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
-                transition={{ duration: 0.18, ease: EASE_OUT }}
-                className={cn(
-                  "flex flex-col gap-1.5 px-1",
-                  classNames?.strength
-                )}
-              >
-                <div className="flex gap-1.5" aria-hidden>
-                  {[0, 1, 2, 3].map((index) => (
-                    <span
-                      key={index}
-                      className="bg-muted-foreground/20 h-1 flex-1 overflow-hidden rounded-full"
-                    >
-                      {/* scaleX rather than width — transforms only, per the
-                          motion conventions, and it keeps the bar off layout. */}
-                      <motion.span
-                        initial={false}
-                        animate={{ scaleX: index < strength ? 1 : 0 }}
-                        transition={reduce ? { duration: 0 } : SPRING_LAYOUT}
-                        className={cn(
-                          "block h-full w-full origin-left rounded-full",
-                          STRENGTH_COLORS[strength]
-                        )}
-                      />
-                    </span>
-                  ))}
-                </div>
-                <p aria-live="polite" className="text-muted-foreground text-xs">
-                  Password strength: {STRENGTH_LABELS[strength]}
-                </p>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
-        </div>
-
-        <Input
-          label="Confirm password"
+          label="Password"
           type={revealPassword ? "text" : "password"}
           autoComplete="new-password"
-          placeholder="Re-enter your password"
+          placeholder="At least 8 characters"
           leftIcon={<Lock />}
+          rightIcon={
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={() => setRevealPassword((prev) => !prev)}
+              aria-label={revealPassword ? "Hide password" : "Show password"}
+              className="text-muted-foreground hover:text-foreground focus-visible:text-foreground transition-colors outline-none"
+            >
+              {revealPassword ? <EyeOff /> : <Eye />}
+            </button>
+          }
           disabled={isSubmitting}
-          value={values.confirmPassword}
-          onChange={(next) => setValue("confirmPassword", next)}
-          onBlur={() => touch("confirmPassword")}
-          error={shownError("confirmPassword")}
-          success={isValid("confirmPassword")}
+          value={values.password}
+          onChange={(next) => setValue("password", next)}
+          onBlur={() => touch("password")}
+          error={shownError("password")}
         />
+
+        <AnimatePresence initial={false}>
+          {showStrength ? (
+            <motion.div
+              initial={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
+              className={cn("flex flex-col gap-1.5 px-1", classNames?.strength)}
+            >
+              <div className="flex gap-1.5" aria-hidden>
+                {[0, 1, 2, 3].map((index) => (
+                  <span
+                    key={index}
+                    className="bg-muted-foreground/20 h-1 flex-1 overflow-hidden rounded-full"
+                  >
+                    <motion.span
+                      initial={false}
+                      animate={{ scaleX: index < strength ? 1 : 0 }}
+                      transition={reduce ? { duration: 0 } : SPRING_LAYOUT}
+                      className={cn(
+                        "block h-full w-full origin-left rounded-full",
+                        STRENGTH_COLORS[strength]
+                      )}
+                    />
+                  </span>
+                ))}
+              </div>
+              <p aria-live="polite" className="text-muted-foreground text-xs">
+                Password strength: {STRENGTH_LABELS[strength]}
+              </p>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </div>
+
+      <Input
+        label="Confirm password"
+        type={revealPassword ? "text" : "password"}
+        autoComplete="new-password"
+        placeholder="Re-enter your password"
+        leftIcon={<Lock />}
+        disabled={isSubmitting}
+        value={values.confirmPassword}
+        onChange={(next) => setValue("confirmPassword", next)}
+        onBlur={() => touch("confirmPassword")}
+        error={shownError("confirmPassword")}
+        success={isValid("confirmPassword")}
+      />
 
       <div className={cn("flex flex-col gap-1.5", classNames?.terms)}>
         <Checkbox
@@ -441,46 +404,6 @@ export function SignUpForm({
           ) : null}
         </AnimatePresence>
       </div>
-
-      <AnimatePresence initial={false}>
-        {errorMessage ? (
-          <motion.p
-            id={formErrorId}
-            role="alert"
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
-            transition={{ duration: 0.2 }}
-            className="border-destructive/30 bg-destructive/10 text-destructive rounded-2xl border px-3 py-2 text-xs"
-          >
-            {errorMessage}
-          </motion.p>
-        ) : null}
-      </AnimatePresence>
-
-      <StatefulButton
-        type="submit"
-        size="lg"
-        state={status}
-        loadingText="Creating account"
-        successText="Account created"
-        errorText="Try again"
-        aria-describedby={errorMessage ? formErrorId : undefined}
-        className={cn("w-full", classNames?.submit)}
-      >
-        {submitLabel}
-      </StatefulButton>
-
-      {footer ? (
-        <div
-          className={cn(
-            "text-muted-foreground text-center text-sm",
-            classNames?.footer
-          )}
-        >
-          {footer}
-        </div>
-      ) : null}
-    </form>
+    </AuthForm>
   );
 }
