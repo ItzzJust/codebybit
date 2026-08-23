@@ -11,7 +11,9 @@ import {
   User,
 } from "lucide-react";
 
-import { findResourceById } from "@/components/minecraft/resources";
+import { resourcesBySection } from "@/components/minecraft/resources";
+import type { Resource } from "@/components/minecraft/resources";
+import type { FilterSection } from "@/components/minecraft/filters";
 import { formatDownloads, formatPrice } from "@/lib/formatting";
 import { seo } from "@/lib/seo";
 
@@ -28,11 +30,27 @@ const SECTION_LABELS = {
   skripts: "Skripts",
 } as const;
 
+// Find resource by clean ID (without section prefix)
+function findResourceByCleanId(
+  cleanId: string,
+): { resource: Resource; section: FilterSection } | undefined {
+  for (const [section, resources] of Object.entries(resourcesBySection)) {
+    // Check both exact match and with section prefix
+    const resource = resources.find(
+      (r) => r.id === cleanId || r.id === `${section}-${cleanId}`,
+    );
+    if (resource) {
+      return { resource, section: section as FilterSection };
+    }
+  }
+  return undefined;
+}
+
 export const Route = createFileRoute(
   "/resources/minecraft/resource/plugin/$resourceId",
 )({
   head: ({ params }) => {
-    const result = findResourceById(params.resourceId);
+    const result = findResourceByCleanId(params.resourceId);
     const title = result?.resource.name ?? "Resource";
     const description =
       result?.resource.description ?? "View resource details on CodeByBit";
@@ -47,7 +65,7 @@ export const Route = createFileRoute(
 
 function ResourceDetailPage() {
   const { resourceId } = Route.useParams();
-  const result = findResourceById(resourceId);
+  const result = findResourceByCleanId(resourceId);
 
   if (!result) {
     return (
@@ -86,43 +104,61 @@ function ResourceDetailPage() {
         Back to {sectionLabel}
       </Link>
 
+      {/* Header */}
+      <header className="space-y-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            {resource.name}
+          </h1>
+          <Badge
+            variant={resource.price === 0 ? "secondary" : "default"}
+            className="self-start text-sm"
+          >
+            {formatPrice(resource.price)}
+          </Badge>
+        </div>
+
+        <div className="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+          <span className="flex items-center gap-1.5">
+            <User className="size-4" />
+            {resource.author}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Download className="size-4" />
+            {formatDownloads(resource.downloads)} downloads
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Calendar className="size-4" />
+            {sectionLabel}
+          </span>
+        </div>
+      </header>
+
       {/* Main content grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px] lg:gap-8">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px] lg:gap-8">
         {/* Left column - Main content */}
         <div className="space-y-6">
-          {/* Header */}
-          <header className="space-y-3">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                {resource.name}
-              </h1>
-              <Badge
-                variant={resource.price === 0 ? "secondary" : "default"}
-                className="self-start text-sm"
-              >
-                {formatPrice(resource.price)}
-              </Badge>
-            </div>
-
-            <div className="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-              <span className="flex items-center gap-1.5">
-                <User className="size-4" />
-                {resource.author}
-              </span>
-              <span className="flex items-center gap-1.5">
+          {/* Action button (mobile only) */}
+          <Button size="lg" className="w-full gap-2 lg:hidden">
+            {resource.price === 0 ? (
+              <>
                 <Download className="size-4" />
-                {formatDownloads(resource.downloads)} downloads
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Calendar className="size-4" />
-                {sectionLabel}
-              </span>
-            </div>
-          </header>
+                Download
+              </>
+            ) : (
+              <>
+                <ExternalLink className="size-4" />
+                View Resource
+              </>
+            )}
+          </Button>
 
           {/* Description with Markdown rendering */}
           <Card>
             <CardContent className="space-y-4 pt-6">
+              <h2 className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                Description
+              </h2>
               <div className="prose prose-sm dark:prose-invert max-w-none">
                 <Markdown>{resource.description}</Markdown>
               </div>
@@ -133,9 +169,9 @@ function ResourceDetailPage() {
           {attributeEntries.length > 0 && (
             <Card>
               <CardContent className="pt-6">
-                <h3 className="text-muted-foreground mb-3 text-xs font-medium tracking-wide uppercase">
+                <h2 className="text-muted-foreground mb-4 text-xs font-medium tracking-wide uppercase">
                   Details
-                </h3>
+                </h2>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {attributeEntries.map(([key, values]) => (
                     <div key={key} className="space-y-2">
@@ -160,10 +196,10 @@ function ResourceDetailPage() {
           {resource.tags.length > 0 && (
             <Card>
               <CardContent className="pt-6">
-                <h3 className="text-muted-foreground mb-3 flex items-center gap-1 text-xs font-medium tracking-wide uppercase">
+                <h2 className="text-muted-foreground mb-3 flex items-center gap-1 text-xs font-medium tracking-wide uppercase">
                   <Tag className="size-3" />
                   Tags
-                </h3>
+                </h2>
                 <div className="flex flex-wrap gap-1.5">
                   {resource.tags.map((tag) => (
                     <Badge
@@ -182,8 +218,8 @@ function ResourceDetailPage() {
 
         {/* Right column - Sidebar */}
         <div className="space-y-4">
-          {/* Action card */}
-          <Card className="sticky top-20">
+          {/* Action card (desktop only) */}
+          <Card className="sticky top-20 hidden lg:block">
             <CardContent className="space-y-4 pt-6">
               <Button size="lg" className="w-full gap-2">
                 {resource.price === 0 ? (
@@ -211,28 +247,28 @@ function ResourceDetailPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Author card */}
+          <Card>
+            <CardContent className="pt-6">
+              <h2 className="text-muted-foreground mb-3 text-xs font-medium tracking-wide uppercase">
+                Author
+              </h2>
+              <div className="flex items-center gap-3">
+                <div className="bg-muted flex size-10 items-center justify-center rounded-full">
+                  <User className="text-muted-foreground size-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">{resource.author}</p>
+                  <p className="text-muted-foreground text-xs">
+                    Member since 2023
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
-
-      {/* Author info — full-width below the grid */}
-      <Card>
-        <CardContent className="pt-6">
-          <p className="text-muted-foreground mb-3 text-xs font-medium tracking-wide uppercase">
-            Author
-          </p>
-          <div className="flex items-center gap-3">
-            <div className="bg-muted flex size-10 items-center justify-center rounded-full">
-              <User className="text-muted-foreground size-5" />
-            </div>
-            <div>
-              <p className="text-sm font-medium">{resource.author}</p>
-              <p className="text-muted-foreground text-xs">
-                Member since 2023
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

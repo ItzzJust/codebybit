@@ -30,16 +30,29 @@ const SECTION_TITLES = {
   skripts: "Skripts",
 } as const satisfies Record<FilterSection, string>;
 
-function ResourceCard({ resource }: { resource: Resource }) {
+// Strip section prefix from resource ID (e.g., "plugin-vaultx" -> "vaultx")
+function stripSectionPrefix(id: string, section: string): string {
+  const prefix = `${section}-`;
+  return id.startsWith(prefix) ? id.slice(prefix.length) : id;
+}
+
+function ResourceCard({
+  resource,
+  section,
+}: {
+  resource: Resource;
+  section: FilterSection;
+}) {
   const attributeValues = Object.values(resource.attributes)
     .flat()
     .slice(0, 3);
   const tagValues = resource.tags.slice(0, 2);
+  const cleanId = stripSectionPrefix(resource.id, section);
 
   return (
     <Link
       to="/resources/minecraft/resource/plugin/$resourceId"
-      params={{ resourceId: resource.id }}
+      params={{ resourceId: cleanId }}
       className="group/card border-border/50 bg-muted/20 hover:border-primary/30 hover:bg-muted/40 flex h-full flex-col overflow-hidden rounded-2xl border p-5 transition-all duration-300 hover:shadow-lg"
     >
       <div className="flex h-full flex-col gap-3">
@@ -173,7 +186,7 @@ export function ResourceList() {
         <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {resources.map((resource) => (
             <li key={resource.id}>
-              <ResourceCard resource={resource} />
+              <ResourceCard resource={resource} section={section} />
             </li>
           ))}
         </ul>
