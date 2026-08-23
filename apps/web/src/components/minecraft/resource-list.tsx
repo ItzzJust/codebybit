@@ -1,9 +1,7 @@
 import {
   Badge,
   Button,
-  Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -14,7 +12,7 @@ import {
   useSearch,
   Link,
 } from "@tanstack/react-router";
-import { Download, ExternalLink } from "lucide-react";
+import { Download, ExternalLink, User } from "lucide-react";
 
 import { formatDownloads, formatPrice } from "@/lib/formatting";
 
@@ -23,7 +21,7 @@ import { filters, getActiveSection } from "./filters";
 import { filterResources, resourcesBySection } from "./resources";
 import type { Resource } from "./resources";
 
-const SECTION_TITLES: Record<FilterSection, string> = {
+const SECTION_TITLES = {
   builds: "Builds",
   configs: "Configurations",
   "graphics-textures": "Graphics & Textures",
@@ -34,14 +32,20 @@ const SECTION_TITLES: Record<FilterSection, string> = {
   "server-jars": "Server Jars",
   setups: "Server Setups",
   skripts: "Skripts",
-};
+} as const satisfies Record<FilterSection, string>;
 
 function ResourceCard({ resource }: { resource: Resource }) {
-  const attributeValues = Object.values(resource.attributes).flat().slice(0, 3);
+  const attributeValues = Object.values(resource.attributes)
+    .flat()
+    .slice(0, 3);
   const tagValues = resource.tags.slice(0, 2);
 
   return (
-    <Card className="group/card border-border/50 bg-muted/20 hover:border-primary/30 hover:bg-muted/40 flex h-full flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg">
+    <Link
+      to="/resources/minecraft/resource/$resourceId"
+      params={{ resourceId: resource.id }}
+      className="group/card border-border/50 bg-muted/20 hover:border-primary/30 hover:bg-muted/40 flex h-full flex-col overflow-hidden rounded-2xl border transition-all duration-300 hover:shadow-lg"
+    >
       <CardHeader className="gap-2.5 pb-3">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="group-hover/card:text-foreground text-lg leading-snug font-semibold transition-colors">
@@ -55,16 +59,17 @@ function ResourceCard({ resource }: { resource: Resource }) {
           </Badge>
         </div>
 
-        <p className="text-muted-foreground text-xs font-medium">
-          by {resource.author}
+        <p className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+          <User className="size-3.5" />
+          {resource.author}
         </p>
-
-        <CardDescription className="line-clamp-2 text-sm leading-relaxed">
-          {resource.description}
-        </CardDescription>
       </CardHeader>
 
       <CardContent className="flex-1 space-y-3 pt-0">
+        <p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed">
+          {resource.description}
+        </p>
+
         <p className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
           <Download className="size-3.5" />
           {formatDownloads(resource.downloads)} downloads
@@ -93,23 +98,12 @@ function ResourceCard({ resource }: { resource: Resource }) {
       </CardContent>
 
       <CardFooter className="border-border/40 border-t pt-3">
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full gap-1.5 rounded-xl"
-          nativeButton={false}
-          render={
-            <Link
-              to="/resources/minecraft/resource/$resourceId"
-              params={{ resourceId: resource.id }}
-            />
-          }
-        >
-          View Resource
+        <div className="text-muted-foreground group-hover/card:text-primary flex w-full items-center justify-between text-sm font-medium transition-colors">
+          <span>View Resource</span>
           <ExternalLink className="size-3.5" />
-        </Button>
+        </div>
       </CardFooter>
-    </Card>
+    </Link>
   );
 }
 
@@ -159,7 +153,8 @@ export function ResourceList() {
   }
 
   const sectionFilters = filters[section];
-  const allResources = resourcesBySection[section] ?? [];
+  // SAFETY: section is validated by getActiveSection to be a valid key of resourcesBySection
+  const allResources = resourcesBySection[section as keyof typeof resourcesBySection] ?? [];
   const resources = filterResources(allResources, search, sectionFilters);
 
   const clearFilters = () => {
@@ -170,7 +165,8 @@ export function ResourceList() {
     <div className="space-y-6 px-4 py-6 sm:px-6 sm:py-8">
       <header className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          {SECTION_TITLES[section]}
+          {/* SAFETY: section is validated by getActiveSection to be a valid key of SECTION_TITLES */}
+          {SECTION_TITLES[section as keyof typeof SECTION_TITLES]}
         </h1>
         <p className="text-muted-foreground text-sm">
           Showing {resources.length} of {allResources.length} resources

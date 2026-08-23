@@ -1,20 +1,18 @@
-import {
+import { filterSections } from "@codebybit/ui";
+import type { FilterOption } from "@codebybit/ui";
+
+export {
   allFilterKeys,
   filterSections,
   normalizeList,
   sanitizeSearch,
 } from "@codebybit/ui";
-import type {
+export type {
   FilterKey,
   FilterOption,
   FilterSection,
   ResourceSearch,
 } from "@codebybit/ui";
-
-export type { FilterKey, FilterOption, FilterSection, ResourceSearch };
-export { allFilterKeys, filterSections, normalizeList, sanitizeSearch };
-
-// ---- App-specific filter definitions ----
 
 const minecraftVersion = {
   key: "minecraft_version",
@@ -90,10 +88,11 @@ export const filters = {
   ],
 } as const satisfies Record<string, readonly FilterOption[]>;
 
+// SAFETY: filterSections is a readonly tuple of string literals; cast is safe
 export function getActiveSection(
-  pathname: string
+  pathname: string,
 ): (typeof filterSections)[number] | undefined {
   return (filterSections as readonly string[]).find((section) =>
-    pathname.startsWith(`/resources/minecraft/${section}`)
+    pathname.startsWith(`/resources/minecraft/${section}`),
   ) as (typeof filterSections)[number] | undefined;
 }

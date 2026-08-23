@@ -3,14 +3,29 @@ import { useEffect, useState } from "react";
 import { fetchMinecraftVersions } from "@/server/functions/minecraft-versions";
 
 interface UseMinecraftVersionsResult {
-  versions: string[];
-  isLoading: boolean;
   error: string | null;
+  isLoading: boolean;
+  versions: string[];
 }
 
-// Module-level cache for cross-component deduplication
 let cachedVersions: string[] | null = null;
 let fetchPromise: Promise<string[]> | null = null;
+
+function loadVersions(): Promise<string[]> {
+  if (!fetchPromise) {
+    fetchPromise = fetchMinecraftVersions()
+      .then((result) => {
+        cachedVersions = result.versions;
+        return result.versions;
+      })
+      .catch((error) => {
+        fetchPromise = null;
+        throw error;
+      });
+  }
+
+  return fetchPromise;
+}
 
 export function useMinecraftVersions(): UseMinecraftVersionsResult {
   const [versions, setVersions] = useState<string[]>(cachedVersions ?? []);
@@ -24,30 +39,27 @@ export function useMinecraftVersions(): UseMinecraftVersionsResult {
       return;
     }
 
-    // Deduplicate concurrent fetches across components
-    if (!fetchPromise) {
-      fetchPromise = fetchMinecraftVersions()
-        .then((result) => {
-          cachedVersions = result.versions;
-          return result.versions;
-        })
-        .catch((error) => {
-          fetchPromise = null; // Allow retry on failure
-          throw error;
-        });
-    }
+    let cancelled = false;
 
-    fetchPromise
+    loadVersions()
       .then((v) => {
-        setVersions(v);
-        setIsLoading(false);
+        if (!cancelled) {
+          setVersions(v);
+          setIsLoading(false);
+        }
       })
       .catch((error) => {
-        setError(
-          error instanceof Error ? error.message : "Failed to load versions"
-        );
-        setIsLoading(false);
+        if (!cancelled) {
+          setError(
+            error instanceof Error ? error.message : "Failed to load versions",
+          );
+          setIsLoading(false);
+        }
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { error, isLoading, versions };

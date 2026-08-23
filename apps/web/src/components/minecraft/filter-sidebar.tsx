@@ -84,13 +84,13 @@ function SearchInput() {
   const value = active ? draft : query;
 
   const setQuery = useCallback(
-    (value: string | null) => {
+    (newValue: string | null) => {
       navigate({
         replace: true,
         search: (prev: ResourceSearch) => {
           const next: ResourceSearch = {};
-          if (value) {
-            next.q = value;
+          if (newValue) {
+            next.q = newValue;
           }
           if (prev.tags && prev.tags.length > 0) {
             next.tags = prev.tags;

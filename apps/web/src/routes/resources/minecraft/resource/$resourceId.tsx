@@ -13,7 +13,7 @@ import { findResourceById } from "@/components/minecraft/resources";
 import { formatDownloads, formatPrice } from "@/lib/formatting";
 import { seo } from "@/lib/seo";
 
-const SECTION_LABELS: Record<string, string> = {
+const SECTION_LABELS = {
   builds: "Builds",
   configs: "Configurations",
   "graphics-textures": "Graphics & Textures",
@@ -24,10 +24,10 @@ const SECTION_LABELS: Record<string, string> = {
   "server-jars": "Server Jars",
   setups: "Server Setups",
   skripts: "Skripts",
-};
+} as const;
 
 export const Route = createFileRoute(
-  "/resources/minecraft/resource/$resourceId"
+  "/resources/minecraft/resource/$resourceId",
 )({
   head: ({ params }) => {
     const result = findResourceById(params.resourceId);
@@ -52,7 +52,7 @@ function ResourceDetailPage() {
       <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 px-4 text-center">
         <h1 className="text-2xl font-bold">Resource not found</h1>
         <p className="text-muted-foreground text-sm">
-          The resource you're looking for doesn't exist.
+          The resource you&apos;re looking for doesn&apos;t exist.
         </p>
         <Button
           variant="outline"
@@ -66,14 +66,15 @@ function ResourceDetailPage() {
   }
 
   const { resource, section } = result;
-  const sectionLabel = SECTION_LABELS[section] ?? section;
+  // SAFETY: section is a valid key from the resource data structure
+  const sectionLabel = SECTION_LABELS[section as keyof typeof SECTION_LABELS] ?? section;
   const sectionHref = `/resources/minecraft/${section}` as const;
   const attributeEntries = Object.entries(resource.attributes).filter(
-    ([, values]) => values && values.length > 0
+    ([, values]) => values && values.length > 0,
   );
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 sm:space-y-8">
+    <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8">
       {/* Back link */}
       <Link
         to={sectionHref}
@@ -131,7 +132,7 @@ function ResourceDetailPage() {
                       {key.replaceAll("_", " ")}
                     </p>
                     <div className="flex flex-wrap gap-1">
-                      {values!.map((v) => (
+                      {values?.map((v) => (
                         <Badge key={v} variant="secondary" className="text-xs">
                           {v}
                         </Badge>

@@ -212,7 +212,8 @@ async function generateOgImage(
 ): Promise<Uint8Array> {
   const fontData = await getInterFont();
 
-  const svg = await satori(ogTemplate({ title, description }) as any, {
+  // SAFETY: satori accepts JSX-like objects; ogTemplate returns a valid satori input
+  const svg = await satori(ogTemplate({ title, description }) as unknown as React.ReactElement, {
     width: OG_WIDTH,
     height: OG_HEIGHT,
     fonts: [

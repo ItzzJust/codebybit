@@ -51,11 +51,15 @@ export function seo({
 }: SeoOptions) {
   const fullTitle = `${title} | ${SITE_NAME}`;
   const canonicalUrl = `${SITE_URL}${path}`;
-  const imageUrl = image?.startsWith("http")
-    ? image
-    : (image
-      ? `${SITE_URL}${image}`
-      : buildOgImageUrl(fullTitle, description));
+
+  let imageUrl: string;
+  if (image?.startsWith("http")) {
+    imageUrl = image;
+  } else if (image) {
+    imageUrl = `${SITE_URL}${image}`;
+  } else {
+    imageUrl = buildOgImageUrl(fullTitle, description);
+  }
 
   return {
     links: [
