@@ -31,7 +31,7 @@ import { Route as ResourcesMinecraftSetupsRouteImport } from './routes/resources
 import { Route as ResourcesMinecraftSkriptsRouteImport } from './routes/resources/minecraft/skripts'
 import { Route as ResourcesRobloxIndexRouteImport } from './routes/resources/roblox/index'
 import { Route as ResourcesWebsitesIndexRouteImport } from './routes/resources/websites/index'
-import { Route as ResourcesMinecraftResourceResourceIdRouteImport } from './routes/resources/minecraft/resource/$resourceId'
+import { Route as ResourcesMinecraftResourcePluginResourceIdRouteImport } from './routes/resources/minecraft/resource/plugin/$resourceId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -151,10 +151,10 @@ const ResourcesWebsitesIndexRoute = ResourcesWebsitesIndexRouteImport.update({
   path: '/resources/websites/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResourcesMinecraftResourceResourceIdRoute =
-  ResourcesMinecraftResourceResourceIdRouteImport.update({
-    id: '/resource/$resourceId',
-    path: '/resource/$resourceId',
+const ResourcesMinecraftResourcePluginResourceIdRoute =
+  ResourcesMinecraftResourcePluginResourceIdRouteImport.update({
+    id: '/resource/plugin/$resourceId',
+    path: '/resource/plugin/$resourceId',
     getParentRoute: () => ResourcesMinecraftRouteRoute,
   } as any)
 
@@ -181,7 +181,7 @@ export interface FileRoutesByFullPath {
   '/resources/minecraft/': typeof ResourcesMinecraftIndexRoute
   '/resources/roblox/': typeof ResourcesRobloxIndexRoute
   '/resources/websites/': typeof ResourcesWebsitesIndexRoute
-  '/resources/minecraft/resource/$resourceId': typeof ResourcesMinecraftResourceResourceIdRoute
+  '/resources/minecraft/resource/plugin/$resourceId': typeof ResourcesMinecraftResourcePluginResourceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -205,7 +205,7 @@ export interface FileRoutesByTo {
   '/resources/minecraft': typeof ResourcesMinecraftIndexRoute
   '/resources/roblox': typeof ResourcesRobloxIndexRoute
   '/resources/websites': typeof ResourcesWebsitesIndexRoute
-  '/resources/minecraft/resource/$resourceId': typeof ResourcesMinecraftResourceResourceIdRoute
+  '/resources/minecraft/resource/plugin/$resourceId': typeof ResourcesMinecraftResourcePluginResourceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -231,7 +231,7 @@ export interface FileRoutesById {
   '/resources/minecraft/': typeof ResourcesMinecraftIndexRoute
   '/resources/roblox/': typeof ResourcesRobloxIndexRoute
   '/resources/websites/': typeof ResourcesWebsitesIndexRoute
-  '/resources/minecraft/resource/$resourceId': typeof ResourcesMinecraftResourceResourceIdRoute
+  '/resources/minecraft/resource/plugin/$resourceId': typeof ResourcesMinecraftResourcePluginResourceIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -258,7 +258,7 @@ export interface FileRouteTypes {
     | '/resources/minecraft/'
     | '/resources/roblox/'
     | '/resources/websites/'
-    | '/resources/minecraft/resource/$resourceId'
+    | '/resources/minecraft/resource/plugin/$resourceId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -282,7 +282,7 @@ export interface FileRouteTypes {
     | '/resources/minecraft'
     | '/resources/roblox'
     | '/resources/websites'
-    | '/resources/minecraft/resource/$resourceId'
+    | '/resources/minecraft/resource/plugin/$resourceId'
   id:
     | '__root__'
     | '/'
@@ -307,7 +307,7 @@ export interface FileRouteTypes {
     | '/resources/minecraft/'
     | '/resources/roblox/'
     | '/resources/websites/'
-    | '/resources/minecraft/resource/$resourceId'
+    | '/resources/minecraft/resource/plugin/$resourceId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -480,11 +480,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResourcesWebsitesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/resources/minecraft/resource/$resourceId': {
-      id: '/resources/minecraft/resource/$resourceId'
-      path: '/resource/$resourceId'
-      fullPath: '/resources/minecraft/resource/$resourceId'
-      preLoaderRoute: typeof ResourcesMinecraftResourceResourceIdRouteImport
+    '/resources/minecraft/resource/plugin/$resourceId': {
+      id: '/resources/minecraft/resource/plugin/$resourceId'
+      path: '/resource/plugin/$resourceId'
+      fullPath: '/resources/minecraft/resource/plugin/$resourceId'
+      preLoaderRoute: typeof ResourcesMinecraftResourcePluginResourceIdRouteImport
       parentRoute: typeof ResourcesMinecraftRouteRoute
     }
   }
@@ -502,7 +502,7 @@ interface ResourcesMinecraftRouteRouteChildren {
   ResourcesMinecraftSetupsRoute: typeof ResourcesMinecraftSetupsRoute
   ResourcesMinecraftSkriptsRoute: typeof ResourcesMinecraftSkriptsRoute
   ResourcesMinecraftIndexRoute: typeof ResourcesMinecraftIndexRoute
-  ResourcesMinecraftResourceResourceIdRoute: typeof ResourcesMinecraftResourceResourceIdRoute
+  ResourcesMinecraftResourcePluginResourceIdRoute: typeof ResourcesMinecraftResourcePluginResourceIdRoute
 }
 
 const ResourcesMinecraftRouteRouteChildren: ResourcesMinecraftRouteRouteChildren =
@@ -519,8 +519,8 @@ const ResourcesMinecraftRouteRouteChildren: ResourcesMinecraftRouteRouteChildren
     ResourcesMinecraftSetupsRoute: ResourcesMinecraftSetupsRoute,
     ResourcesMinecraftSkriptsRoute: ResourcesMinecraftSkriptsRoute,
     ResourcesMinecraftIndexRoute: ResourcesMinecraftIndexRoute,
-    ResourcesMinecraftResourceResourceIdRoute:
-      ResourcesMinecraftResourceResourceIdRoute,
+    ResourcesMinecraftResourcePluginResourceIdRoute:
+      ResourcesMinecraftResourcePluginResourceIdRoute,
   }
 
 const ResourcesMinecraftRouteRouteWithChildren =

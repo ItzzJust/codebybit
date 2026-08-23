@@ -42,7 +42,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
 
   return (
     <Link
-      to="/resources/minecraft/resource/$resourceId"
+      to="/resources/minecraft/resource/plugin/$resourceId"
       params={{ resourceId: resource.id }}
       className="group/card border-border/50 bg-muted/20 hover:border-primary/30 hover:bg-muted/40 flex h-full flex-col overflow-hidden rounded-2xl border transition-all duration-300 hover:shadow-lg"
     >

@@ -23,6 +23,7 @@
     "react-doctor": "npx react-doctor@latest"
   },
   "dependencies": {
+    "@tanstack/markdown": "^0.0.13",
     "@tanstack/react-hotkeys": "^0.10.0"
   },
   "devDependencies": {

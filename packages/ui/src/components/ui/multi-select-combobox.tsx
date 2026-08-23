@@ -11,6 +11,7 @@ import {
   ComboboxList,
   ComboboxItem,
   ComboboxEmpty,
+  useComboboxAnchor,
 } from "./combobox";
 
 export interface MultiSelectComboboxProps {
@@ -43,6 +44,7 @@ function MultiSelectCombobox({
     () => new Map(options.map((opt) => [opt.value, opt.label])),
     [options]
   );
+  const anchorRef = useComboboxAnchor();
 
   return (
     <Combobox
@@ -51,7 +53,7 @@ function MultiSelectCombobox({
       multiple
       disabled={disabled}
     >
-      <ComboboxChips className="w-full">
+      <ComboboxChips ref={anchorRef} className="w-full">
         {value.map((v) => (
           <ComboboxChip key={v}>{optionMap.get(v) ?? v}</ComboboxChip>
         ))}
@@ -63,7 +65,7 @@ function MultiSelectCombobox({
         placeholder={placeholder}
         className={cn("hidden", className)}
       />
-      <ComboboxContent>
+      <ComboboxContent anchor={anchorRef}>
         <ComboboxList>
           {options.map((opt) => (
             <ComboboxItem key={opt.value} value={opt.value}>
