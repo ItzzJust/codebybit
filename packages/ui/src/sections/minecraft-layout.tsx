@@ -52,7 +52,9 @@ export function MinecraftLayout({
           </header>
         )}
 
-        <main className="min-w-0 p-4 sm:p-6">{children}</main>
+        <div className="mx-auto max-w-7xl min-w-0">
+          <main className="min-w-0">{children}</main>
+        </div>
       </SidebarInset>
 
       {/* Mobile filter drawer — floating button + bottom sheet */}

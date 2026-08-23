@@ -122,6 +122,10 @@ export type {
 } from "./sections/resource-categories";
 export { MinecraftLayout } from "./sections/minecraft-layout";
 export type { MinecraftLayoutProps } from "./sections/minecraft-layout";
+export { ResourcePageLayout } from "./sections/resource-page-layout";
+export type { ResourcePageLayoutProps } from "./sections/resource-page-layout";
+export { ResourceHeroLayout } from "./sections/resource-hero-layout";
+export type { ResourceHeroLayoutProps } from "./sections/resource-hero-layout";
 
 // minecraft filters (types & pure functions)
 export type {

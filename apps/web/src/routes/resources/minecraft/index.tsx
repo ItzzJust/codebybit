@@ -1,5 +1,7 @@
-import { CategoryCard, PageHeader } from "@codebybit/ui";
+import { CategoryCard, ResourceHeroLayout } from "@codebybit/ui";
 import { createFileRoute } from "@tanstack/react-router";
+import { Blocks } from "lucide-react";
+import { m, useReducedMotion } from "motion/react";
 
 import { minecraftCategories } from "@/data/minecraft/categories";
 
@@ -8,26 +10,36 @@ export const Route = createFileRoute("/resources/minecraft/")({
 });
 
 function MinecraftResources() {
-  return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-      <PageHeader
-        badge="Minecraft"
-        description="Plugins, mods, builds, textures, server setups, and more. Find everything you need for your Minecraft server."
-        title="Minecraft Resources"
-      />
+  const reduce = useReducedMotion();
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {minecraftCategories.map((category) => (
+  return (
+    <ResourceHeroLayout
+      icon={Blocks}
+      title="Minecraft"
+      categoryCount={minecraftCategories.length}
+      description="Plugins, mods, builds, textures, server setups, and more. Find everything you need for your Minecraft server."
+      images={["/minecraft/0.png", "/minecraft/1.png", "/minecraft/2.png"]}
+    >
+      {minecraftCategories.map((category, i) => (
+        <m.div
+          key={category.id}
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: reduce ? 0 : i * 0.04,
+            duration: 0.35,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
           <CategoryCard
-            key={category.id}
             description={category.description}
             href={category.href}
             icon={category.icon}
             id={category.id}
             title={category.title}
           />
-        ))}
-      </div>
-    </main>
+        </m.div>
+      ))}
+    </ResourceHeroLayout>
   );
 }

@@ -47,7 +47,9 @@ function App() {
   const websitesImg = useRandomImage("websites");
   const discordImg = useRandomImage("discord");
 
-  const imageMap: Record<string, string> = {
+  type CategoryId = "discord" | "minecraft" | "roblox" | "websites";
+
+  const imageMap: Record<CategoryId, string> = {
     discord: discordImg.src,
     minecraft: minecraftImg.src,
     roblox: robloxImg.src,
@@ -55,10 +57,10 @@ function App() {
   };
 
   const getRandomImage = (categoryId: string): string =>
-    imageMap[categoryId] ?? `/${categoryId}/0.png`;
+    imageMap[categoryId as CategoryId] ?? `/${categoryId}/0.png`;
 
   return (
-    <div className="w-full overflow-x-hidden">
+    <div className="-mx-4 -mt-16 -mr-4 -ml-4 sm:-mx-6 lg:-mx-8">
       <Hero
         prefix="Find the best assets for your"
         words={["Discord Server", "Minecraft Server", "Roblox Game", "Website"]}
@@ -79,7 +81,7 @@ function App() {
       {/* Resource Categories Section */}
       <section
         id="resources"
-        className="relative w-full overflow-hidden px-4 py-12 sm:px-6 sm:py-20 md:py-28 lg:py-32"
+        className="relative w-full overflow-hidden px-4 py-16 sm:px-6 sm:py-20 md:py-24"
       >
         <ResourceCategories
           categories={categories}

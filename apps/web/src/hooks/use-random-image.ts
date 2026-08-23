@@ -16,13 +16,15 @@ export function useRandomImage(
   categoryId: string,
   intervalMs = 15_000
 ): { src: string; isLoaded: boolean; handleLoad: () => void } {
-  const [src, setSrc] = useState(() => `/${categoryId}/0.png`);
+  const defaultSrc =
+    imagesByCategory[categoryId]?.[0] ?? `/${categoryId}/0.png`;
+  const [src, setSrc] = useState(defaultSrc);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const selectRandom = () => {
       const pool = imagesByCategory[categoryId] ?? [];
-      const selected = draw(pool) ?? `/${categoryId}/0.png`;
+      const selected = draw(pool) ?? defaultSrc;
 
       setIsLoaded(false);
       setSrc(selected);
@@ -36,7 +38,7 @@ export function useRandomImage(
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [categoryId, intervalMs]);
+  }, [categoryId, intervalMs, defaultSrc]);
 
   const handleLoad = () => setIsLoaded(true);
 

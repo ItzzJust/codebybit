@@ -17,13 +17,15 @@ export const Route = createFileRoute("/resources/minecraft")({
       result.q = search.q.trim();
     }
 
-    const tags = normalizeList(search.tags);
+    const tags = normalizeList(search.tags as string[] | string | undefined);
     if (tags.length > 0) {
       result.tags = tags;
     }
 
     for (const key of allFilterKeys) {
-      const values = normalizeList(search[key]);
+      const values = normalizeList(
+        search[key] as string[] | string | undefined
+      );
       if (values.length > 0) {
         result[key] = values;
       }

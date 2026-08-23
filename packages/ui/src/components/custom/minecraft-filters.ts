@@ -32,7 +32,7 @@ export type FilterKey =
   | "software"
   | "type";
 
-export function normalizeList(value: unknown): string[] {
+export function normalizeList(value: string[] | string | undefined): string[] {
   if (Array.isArray(value)) {
     return value.map(String);
   }

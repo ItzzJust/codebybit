@@ -1,4 +1,4 @@
-import { CategoryCard, PageHeader } from "@codebybit/ui";
+import { CategoryCard, PageHeader, ResourcePageLayout } from "@codebybit/ui";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { resourceCategories } from "@/data/resource-categories";
@@ -9,14 +9,14 @@ export const Route = createFileRoute("/resources/")({
 
 function ResourcesPage() {
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
+    <ResourcePageLayout>
       <PageHeader
         badge="Marketplace"
         description="Browse our collection of digital assets across all categories. Find everything you need for your Minecraft server, Roblox game, website, or Discord community."
         title="All Resources"
       />
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         {resourceCategories.map((category) => (
           <CategoryCard
             key={category.id}
@@ -29,6 +29,6 @@ function ResourcesPage() {
           />
         ))}
       </div>
-    </main>
+    </ResourcePageLayout>
   );
 }

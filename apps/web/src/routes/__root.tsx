@@ -13,6 +13,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
+import { Providers } from "@/components/providers";
 import { rootSeo } from "@/lib/seo";
 
 import appCss from "../styles.css?url";
@@ -29,11 +30,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             <Toaster>
               <TooltipProvider>
                 <MotionProvider>
-                  <CommandMenu />
-                  <Navbar />
-                  <ErrorBoundary>
-                    <div className="pt-16">{children}</div>
-                  </ErrorBoundary>
+                  <Providers>
+                    <CommandMenu />
+                    <Navbar />
+                    <ErrorBoundary>
+                      <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
+                        {children}
+                      </div>
+                    </ErrorBoundary>
+                  </Providers>
                 </MotionProvider>
               </TooltipProvider>
             </Toaster>

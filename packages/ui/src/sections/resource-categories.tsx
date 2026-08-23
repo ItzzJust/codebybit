@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
 
 export interface ResourceCategory {
@@ -31,7 +32,7 @@ function CategoryImage({
         src={src}
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover blur-xl"
+        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-20 blur-2xl"
       />
 
       <Image
@@ -50,24 +51,23 @@ export function ResourceCategories({
   getRandomImage,
 }: ResourceCategoriesProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12">
-      <div className="mb-8">
-        <h2 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
+    <div className="mx-auto max-w-7xl">
+      <div className="mb-10 text-center">
+        <h2 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">
           Browse Resources
         </h2>
-
-        <p className="text-muted-foreground mt-1 text-sm">
+        <p className="text-muted-foreground mt-2 text-base">
           Select a category to explore available assets.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {categories.map((category) => (
-          <a
+          <Link
             key={category.id}
             id={category.id}
-            href={category.href}
-            className="group border-border/50 bg-muted/30 hover:border-border focus-visible:ring-ring relative flex aspect-4/3 overflow-hidden rounded-xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none"
+            to={category.href}
+            className="group border-border/50 bg-muted/30 hover:border-primary/30 focus-visible:ring-ring relative flex aspect-[4/3] overflow-hidden rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:ring-2 focus-visible:outline-none"
           >
             <CategoryImage
               categoryId={category.id}
@@ -75,20 +75,40 @@ export function ResourceCategories({
               title={category.title}
             />
 
-            <div className="absolute inset-0 z-20 bg-linear-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 z-20 bg-linear-to-t from-black/85 via-black/40 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
 
-            <div className="absolute inset-0 z-30 flex flex-col justify-end p-5 text-white">
-              <h3 className="text-xl font-semibold tracking-wide">
+            {/* Content */}
+            <div className="absolute inset-0 z-30 flex flex-col justify-end p-5">
+              <h3 className="text-xl font-semibold tracking-wide text-white">
                 {category.title}
               </h3>
-
-              <p className="mt-1 text-xs text-white/80 opacity-90">
+              <p className="mt-1 text-sm text-white/70">
                 {category.description}
               </p>
+
+              {/* Hover indicator */}
+              <div className="mt-3 flex items-center gap-1.5 text-sm font-medium text-white/90 opacity-0 transition-all duration-300 group-hover:opacity-100">
+                <span>Explore</span>
+                <svg
+                  aria-hidden="true"
+                  className="size-4 transition-transform duration-300 group-hover:translate-x-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
-    </section>
+    </div>
   );
 }
