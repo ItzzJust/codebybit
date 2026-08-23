@@ -209,28 +209,30 @@ function ResourceDetailPage() {
                   Last updated 2 days ago
                 </p>
               </div>
-
-              {/* Author info */}
-              <div className="border-border/40 border-t pt-4">
-                <p className="text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase">
-                  Author
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="bg-muted flex size-10 items-center justify-center rounded-full">
-                    <User className="text-muted-foreground size-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">{resource.author}</p>
-                    <p className="text-muted-foreground text-xs">
-                      Member since 2023
-                    </p>
-                  </div>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      {/* Author info — full-width below the grid */}
+      <Card>
+        <CardContent className="pt-6">
+          <p className="text-muted-foreground mb-3 text-xs font-medium tracking-wide uppercase">
+            Author
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="bg-muted flex size-10 items-center justify-center rounded-full">
+              <User className="text-muted-foreground size-5" />
+            </div>
+            <div>
+              <p className="text-sm font-medium">{resource.author}</p>
+              <p className="text-muted-foreground text-xs">
+                Member since 2023
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

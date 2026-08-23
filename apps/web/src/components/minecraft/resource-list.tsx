@@ -1,10 +1,6 @@
 import {
   Badge,
   Button,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@codebybit/ui";
 import {
   useNavigate,
@@ -44,13 +40,13 @@ function ResourceCard({ resource }: { resource: Resource }) {
     <Link
       to="/resources/minecraft/resource/plugin/$resourceId"
       params={{ resourceId: resource.id }}
-      className="group/card border-border/50 bg-muted/20 hover:border-primary/30 hover:bg-muted/40 flex h-full flex-col overflow-hidden rounded-2xl border transition-all duration-300 hover:shadow-lg"
+      className="group/card border-border/50 bg-muted/20 hover:border-primary/30 hover:bg-muted/40 flex h-full flex-col overflow-hidden rounded-2xl border p-5 transition-all duration-300 hover:shadow-lg"
     >
-      <CardHeader className="gap-2.5 pb-3">
+      <div className="flex h-full flex-col gap-3">
         <div className="flex items-start justify-between gap-2">
-          <CardTitle className="group-hover/card:text-foreground text-lg leading-snug font-semibold transition-colors">
+          <h3 className="group-hover/card:text-foreground text-lg leading-snug font-semibold transition-colors">
             {resource.name}
-          </CardTitle>
+          </h3>
           <Badge
             variant={resource.price === 0 ? "secondary" : "default"}
             className="shrink-0 text-xs"
@@ -63,46 +59,46 @@ function ResourceCard({ resource }: { resource: Resource }) {
           <User className="size-3.5" />
           {resource.author}
         </p>
-      </CardHeader>
 
-      <CardContent className="flex-1 space-y-3 pt-0">
-        <p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed">
-          {resource.description}
-        </p>
+        <div className="flex-1 space-y-3">
+          <p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed">
+            {resource.description}
+          </p>
 
-        <p className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
-          <Download className="size-3.5" />
-          {formatDownloads(resource.downloads)} downloads
-        </p>
+          <p className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+            <Download className="size-3.5" />
+            {formatDownloads(resource.downloads)} downloads
+          </p>
 
-        <div className="flex flex-wrap gap-1">
-          {attributeValues.map((value) => (
-            <Badge
-              key={value}
-              variant="outline"
-              className="text-[11px] font-normal"
-            >
-              {value}
-            </Badge>
-          ))}
-          {tagValues.map((tag) => (
-            <Badge
-              key={tag}
-              variant="ghost"
-              className="text-[11px] font-normal"
-            >
-              {tag}
-            </Badge>
-          ))}
+          <div className="flex flex-wrap gap-1">
+            {attributeValues.map((value) => (
+              <Badge
+                key={value}
+                variant="outline"
+                className="text-[11px] font-normal"
+              >
+                {value}
+              </Badge>
+            ))}
+            {tagValues.map((tag) => (
+              <Badge
+                key={tag}
+                variant="ghost"
+                className="text-[11px] font-normal"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
         </div>
-      </CardContent>
 
-      <CardFooter className="border-border/40 border-t pt-3">
-        <div className="text-muted-foreground group-hover/card:text-primary flex w-full items-center justify-between text-sm font-medium transition-colors">
-          <span>View Resource</span>
-          <ExternalLink className="size-3.5" />
+        <div className="border-border/40 mt-auto border-t pt-3">
+          <div className="text-muted-foreground group-hover/card:text-primary flex w-full items-center justify-between text-sm font-medium transition-colors">
+            <span>View Resource</span>
+            <ExternalLink className="size-3.5" />
+          </div>
         </div>
-      </CardFooter>
+      </div>
     </Link>
   );
 }
