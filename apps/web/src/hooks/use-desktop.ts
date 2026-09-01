@@ -14,7 +14,10 @@ function getSnapshot() {
 }
 
 function getServerSnapshot() {
-  return true;
+  if (typeof window === "undefined") {
+    return true;
+  }
+  return window.matchMedia(desktopQuery).matches;
 }
 
 export function useDesktop() {

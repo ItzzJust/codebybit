@@ -17,5 +17,10 @@
       "@codebybit/ui/*": ["../../packages/ui/src/*"]
     },
     "allowImportingTsExtensions": true
-  }
+  },
+  "references": [
+    {
+      "path": "../../packages/ui"
+    }
+  ]
 }

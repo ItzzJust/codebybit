@@ -1,0 +1,18 @@
+language: "typescript"
+stack: "frontend"
+layer: "library"
+
+project:
+  name: "ui"
+  description: "Shared UI components"
+
+tasks:
+  dev:
+    command: "echo 'ui is a library — no dev server'"
+
+  typecheck:
+    command: "tsc --noEmit"
+    inputs:
+      - "src/**/*"
+      - "tsconfig.json"
+    outputs: []

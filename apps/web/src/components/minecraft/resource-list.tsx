@@ -1,21 +1,27 @@
-import {
-  Badge,
-  Button,
-} from "@codebybit/ui";
-import {
-  useNavigate,
-  useRouterState,
-  useSearch,
-  Link,
-} from "@tanstack/react-router";
-import { Download, ExternalLink, User } from "lucide-react";
+import { Badge, Button } from "@codebybit/ui";
+import { useNavigate, useRouterState, Link } from "@tanstack/react-router";
+import { Download, ExternalLink, Plus, User } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { formatDownloads, formatPrice } from "@/lib/formatting";
 
-import type { FilterSection, ResourceSearch } from "./filters";
-import { filters, getActiveSection } from "./filters";
-import { filterResources, resourcesBySection } from "./resources";
-import type { Resource } from "./resources";
+import type { FilterSection } from "./filters";
+import { getActiveSection } from "./filters";
+
+interface DbResource {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  section: string;
+  category: string | null;
+  authorId: string;
+  downloads: number;
+  tags: string[];
+  attributes: Record<string, string[]>;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const SECTION_TITLES = {
   builds: "Builds",
@@ -40,12 +46,10 @@ function ResourceCard({
   resource,
   section,
 }: {
-  resource: Resource;
+  resource: DbResource;
   section: FilterSection;
 }) {
-  const attributeValues = Object.values(resource.attributes)
-    .flat()
-    .slice(0, 3);
+  const attributeValues = Object.values(resource.attributes).flat().slice(0, 3);
   const tagValues = resource.tags.slice(0, 2);
   const cleanId = stripSectionPrefix(resource.id, section);
 
@@ -58,7 +62,7 @@ function ResourceCard({
       <div className="flex h-full flex-col gap-3">
         <div className="flex items-start justify-between gap-2">
           <h3 className="group-hover/card:text-foreground text-lg leading-snug font-semibold transition-colors">
-            {resource.name}
+            {resource.title}
           </h3>
           <Badge
             variant={resource.price === 0 ? "secondary" : "default"}
@@ -70,7 +74,7 @@ function ResourceCard({
 
         <p className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
           <User className="size-3.5" />
-          {resource.author}
+          {resource.authorId}
         </p>
 
         <div className="flex-1 space-y-3">
@@ -135,16 +139,22 @@ function EmptyState({ onClear }: { onClear: () => void }) {
         </svg>
       </div>
       <div>
-        <p className="text-foreground text-sm font-medium">
-          No resources match your filters
-        </p>
+        <p className="text-foreground text-sm font-medium">No resources yet</p>
         <p className="text-muted-foreground mt-1 text-xs">
-          Try removing some filters or tags.
+          Be the first to submit a resource in this category.
         </p>
       </div>
-      <Button variant="outline" size="sm" onClick={onClear}>
-        Clear all filters
-      </Button>
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" onClick={onClear}>
+          Clear filters
+        </Button>
+        <Button size="sm" asChild>
+          <Link to="/resources/minecraft/new">
+            <Plus className="size-4" />
+            Submit Resource
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }
@@ -153,18 +163,44 @@ export function ResourceList() {
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   });
-  const search = useSearch({ strict: false }) as ResourceSearch;
   const navigate = useNavigate();
 
+  const [resources, setResources] = useState<DbResource[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const section = getActiveSection(pathname);
+
+  useEffect(() => {
+    if (!section) {
+      return;
+    }
+
+    const controller = new AbortController();
+
+    const fetchResources = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/resources?section=${section}`, {
+          signal: controller.signal,
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setResources(data);
+        }
+      } catch {
+        // Ignore abort errors
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchResources();
+    return () => controller.abort();
+  }, [section]);
+
   if (!section) {
     return null;
   }
-
-  const sectionFilters = filters[section];
-  // SAFETY: section is validated by getActiveSection to be a valid key of resourcesBySection
-  const allResources = resourcesBySection[section as keyof typeof resourcesBySection] ?? [];
-  const resources = filterResources(allResources, search, sectionFilters);
 
   const clearFilters = () => {
     navigate({ replace: true, search: {}, to: "." });
@@ -172,17 +208,35 @@ export function ResourceList() {
 
   return (
     <div className="space-y-6 px-4 py-6 sm:px-6 sm:py-8">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          {/* SAFETY: section is validated by getActiveSection to be a valid key of SECTION_TITLES */}
-          {SECTION_TITLES[section as keyof typeof SECTION_TITLES]}
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          Showing {resources.length} of {allResources.length} resources
-        </p>
+      <header className="flex items-center justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            {SECTION_TITLES[section as keyof typeof SECTION_TITLES]}
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            {isLoading
+              ? "Loading..."
+              : `${resources.length} resource${resources.length === 1 ? "" : "s"}`}
+          </p>
+        </div>
+        <Button size="sm" asChild>
+          <Link to="/resources/minecraft/new">
+            <Plus className="size-4" />
+            Submit
+          </Link>
+        </Button>
       </header>
 
-      {resources.length > 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="border-border/50 bg-muted/20 h-48 animate-pulse rounded-2xl border"
+            />
+          ))}
+        </div>
+      ) : (resources.length > 0 ? (
         <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {resources.map((resource) => (
             <li key={resource.id}>
@@ -192,7 +246,7 @@ export function ResourceList() {
         </ul>
       ) : (
         <EmptyState onClear={clearFilters} />
-      )}
+      ))}
     </div>
   );
 }

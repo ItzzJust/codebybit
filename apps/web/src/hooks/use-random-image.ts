@@ -22,6 +22,8 @@ export function useRandomImage(
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
     const selectRandom = () => {
       const pool = imagesByCategory[categoryId] ?? [];
       const selected = draw(pool) ?? defaultSrc;
@@ -30,10 +32,10 @@ export function useRandomImage(
       setSrc(selected);
 
       const delay = intervalMs + Math.random() * 5000;
-      return window.setTimeout(selectRandom, delay);
+      timeoutId = window.setTimeout(selectRandom, delay);
     };
 
-    const timeoutId = selectRandom();
+    selectRandom();
 
     return () => {
       window.clearTimeout(timeoutId);

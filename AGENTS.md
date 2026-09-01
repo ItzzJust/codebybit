@@ -1,6 +1,6 @@
 # CodeByBit
 
-A marketplace for Minecraft digital resources (a BuiltByBit remake). Built with TanStack Start, React 19, Tailwind CSS v4, shadcn/ui (Base UI + BEUI), Drizzle ORM, and Better Auth, organized as a Turborepo monorepo.
+A marketplace for Minecraft digital resources (a BuiltByBit remake). Built with TanStack Start, React 19, Tailwind CSS v4, shadcn/ui (Base UI + BEUI), Drizzle ORM, and Better Auth, organized as a Moonrepo monorepo.
 
 ## Repository layout
 
@@ -23,7 +23,7 @@ just dev       # start the dev server on :3000
 
 ## Commands
 
-Prefer `just`. Under the hood these run `bun run <script>`, which Turbo pipes to the correct workspace.
+Prefer `just`. Under the hood these run `moon run`, which pipes to the correct workspace.
 
 | Command | Description |
 | --- | --- |
@@ -37,7 +37,7 @@ Prefer `just`. Under the hood these run `bun run <script>`, which Turbo pipes to
 | `just db-generate` / `db-push` / `db-migrate` / `db-studio` | Drizzle commands |
 | `just install` / `env` | Bootstrap dependencies and env |
 
-Raw Turbo usage: `turbo run dev --filter=@codebybit/web`.
+Raw Moon usage: `moon run web:dev`.
 
 ## Environment variables
 

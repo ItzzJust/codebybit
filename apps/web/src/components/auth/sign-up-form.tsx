@@ -3,7 +3,7 @@ import { Checkbox } from "@codebybit/ui/components/ui/checkbox";
 import { Input } from "@codebybit/ui/components/ui/input";
 import { Label } from "@codebybit/ui/components/ui/label";
 import { Eye, EyeOff, Loader2, Mail, Lock, User } from "lucide-react";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 export interface SignUpValues {
   confirmPassword: string;
@@ -49,7 +49,9 @@ function validateSignUp(vals: SignUpValues) {
 }
 
 function FieldError({ error }: { error?: string }) {
-  if (!error) {return null;}
+  if (!error) {
+    return null;
+  }
   return <p className="text-destructive text-xs">{error}</p>;
 }
 
@@ -78,15 +80,16 @@ export function SignUpForm({
 
   const updateField = useCallback(
     <K extends keyof SignUpValues>(key: K, value: SignUpValues[K]) => {
-      setValues((prev) => {
-        const next = { ...prev, [key]: value };
-        setErrors(validateSignUp(next));
-        return next;
-      });
+      setValues((prev) => ({ ...prev, [key]: value }));
       setTouched((prev) => ({ ...prev, [key]: true }));
     },
     []
   );
+
+  // Derive errors from values via useEffect
+  React.useEffect(() => {
+    setErrors(validateSignUp(values));
+  }, [values]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -51,7 +51,7 @@ export function useMinecraftVersions(): UseMinecraftVersionsResult {
       .catch((error) => {
         if (!cancelled) {
           setError(
-            error instanceof Error ? error.message : "Failed to load versions",
+            error instanceof Error ? error.message : "Failed to load versions"
           );
           setIsLoading(false);
         }

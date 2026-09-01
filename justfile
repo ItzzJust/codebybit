@@ -6,13 +6,13 @@ default:
 
 # Development ---------------------------------------------------------------
 dev: # Start the dev server
-  bun run dev
+  moon run :dev
 
 build: # Build for production
-  bun run build
+  moon run :build
 
 preview: # Preview the production build
-  bun run preview
+  moon run :preview
 
 # Quality --------------------------------------------------------------------
 check: # Lint and format check
@@ -22,26 +22,26 @@ fix: # Auto-fix lint and format issues
   bun run fix
 
 typecheck: # Type-check all workspaces
-  bun run typecheck
+  moon run :typecheck
 
 test: # Run the test suite
-  bun run test
+  moon run :test
 
 test-watch: # Run tests in watch mode
-  bun run test:watch
+  moon run :test-watch
 
 # Database -------------------------------------------------------------------
 db-generate: # Generate Drizzle migrations
-  bun run db:generate
+  moon run web:db-generate
 
 db-push: # Push the Drizzle schema to the database
-  bun run db:push
+  moon run web:db-push
 
 db-migrate: # Apply database migrations
-  bun run db:migrate
+  moon run web:db-migrate
 
 db-studio: # Open Drizzle Studio
-  bun run db:studio
+  moon run web:db-studio
 
 # Environment ----------------------------------------------------------------
 install: # Install dependencies and toolchains

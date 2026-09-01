@@ -1,0 +1,10 @@
+language: "typescript"
+stack: "frontend"
+layer: "application"
+
+project:
+  name: "web"
+  description: "TanStack Start web application"
+
+dependsOn:
+  - "ui"

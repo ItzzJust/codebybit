@@ -1,0 +1,15 @@
+projects:
+  web: "apps/web"
+  ui: "packages/ui"
+
+vcs:
+  client: "git"
+  defaultBranch: "master"
+
+pipeline:
+  installDependencies: true
+  syncProjects: true
+
+cache:
+  cas:
+    maxSize: "5gb"

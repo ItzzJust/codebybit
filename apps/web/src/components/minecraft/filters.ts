@@ -90,9 +90,9 @@ export const filters = {
 
 // SAFETY: filterSections is a readonly tuple of string literals; cast is safe
 export function getActiveSection(
-  pathname: string,
+  pathname: string
 ): (typeof filterSections)[number] | undefined {
   return (filterSections as readonly string[]).find((section) =>
-    pathname.startsWith(`/resources/minecraft/${section}`),
+    pathname.startsWith(`/resources/minecraft/${section}`)
   ) as (typeof filterSections)[number] | undefined;
 }

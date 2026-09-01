@@ -8,8 +8,8 @@ dist-ssr/
 .vinxi/
 .build/
 
-# Turborepo
-.turbo/
+# Moon
+.moon/cache/
 
 # Testing
 coverage/

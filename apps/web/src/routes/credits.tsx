@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { useState } from "react";
 
@@ -141,9 +141,9 @@ function CreditsPage() {
       {/* Cards grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((credit) => (
-          <Link
+          <a
             key={credit.href}
-            to={credit.href}
+            href={credit.href}
             target="_blank"
             rel="noopener noreferrer"
             className="group bg-card hover:border-primary/20 hover:bg-accent/50 flex h-full flex-col rounded-xl border p-5 transition-colors"
@@ -169,7 +169,7 @@ function CreditsPage() {
             <span className="text-muted-foreground text-xs font-medium">
               {credit.source}
             </span>
-          </Link>
+          </a>
         ))}
       </div>
 

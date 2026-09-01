@@ -1,0 +1,82 @@
+fileGroups:
+  configs:
+    - "*.config.{js,cjs,mjs,ts}"
+    - "tsconfig.json"
+    - "package.json"
+  sources:
+    - "src/**/*"
+    - "types/**/*"
+  tests:
+    - "tests/**/*"
+    - "**/__tests__/**/*"
+
+implicitInputs:
+  - "package.json"
+  - "tsconfig.json"
+
+tasks:
+  build:
+    command: "vite build"
+    deps:
+      - "^:build"
+    inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+    outputs:
+      - "dist"
+      - ".output"
+      - ".vinxi"
+
+  dev:
+    command: "vite dev"
+    preset: "server"
+
+  preview:
+    command: "vite preview"
+    deps:
+      - "^:build"
+
+  typecheck:
+    command: "tsc --noEmit"
+    deps:
+      - "^:typecheck"
+    inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+    outputs: []
+
+  test:
+    command: "vitest run --passWithNoTests"
+    inputs:
+      - "@group(sources)"
+      - "@group(tests)"
+    outputs: []
+
+  test-watch:
+    command: "vitest"
+    preset: "server"
+
+  check:
+    command: "bun x ultracite check"
+    inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+
+  fix:
+    command: "bun x ultracite fix"
+    inputs:
+      - "@group(sources)"
+      - "@group(configs)"
+
+  db-generate:
+    command: "drizzle-kit generate"
+
+  db-push:
+    command: "drizzle-kit push"
+
+  db-migrate:
+    command: "drizzle-kit migrate"
+
+  db-studio:
+    command: "drizzle-kit studio"
+    preset: "server"

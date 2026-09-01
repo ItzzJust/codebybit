@@ -70,7 +70,7 @@ builtbybit-remake/
 ├── tsconfig.base.json        # Shared TypeScript config
 ├── justfile                  # Task runner recipes
 ├── mise.toml                 # Tool versions
-└── turbo.json                # Turborepo pipeline
+└── .moon/                    # Moonrepo configuration
 ```
 
 ---
@@ -191,7 +191,7 @@ chore: update dependencies
 | [`oxfmt.config.ts`](./oxfmt.config.ts) | OxFmt formatting configuration |
 | [`justfile`](./justfile) | Task runner recipes |
 | [`mise.toml`](./mise.toml) | Tool version management |
-| [`turbo.json`](./turbo.json) | Turborepo pipeline configuration |
+| [`.moon/`](./.moon/) | Moonrepo configuration |
 | [`packages/ui/src/index.ts`](./packages/ui/src/index.ts) | Shared component exports |
 
 ---

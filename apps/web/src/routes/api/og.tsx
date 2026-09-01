@@ -213,24 +213,27 @@ async function generateOgImage(
   const fontData = await getInterFont();
 
   // SAFETY: satori accepts JSX-like objects; ogTemplate returns a valid satori input
-  const svg = await satori(ogTemplate({ title, description }) as unknown as React.ReactElement, {
-    width: OG_WIDTH,
-    height: OG_HEIGHT,
-    fonts: [
-      {
-        name: "Inter",
-        data: fontData,
-        weight: 400,
-        style: "normal",
-      },
-      {
-        name: "Inter",
-        data: fontData,
-        weight: 700,
-        style: "normal",
-      },
-    ],
-  });
+  const svg = await satori(
+    ogTemplate({ title, description }) as unknown as React.ReactElement,
+    {
+      width: OG_WIDTH,
+      height: OG_HEIGHT,
+      fonts: [
+        {
+          name: "Inter",
+          data: fontData,
+          weight: 400,
+          style: "normal",
+        },
+        {
+          name: "Inter",
+          data: fontData,
+          weight: 700,
+          style: "normal",
+        },
+      ],
+    }
+  );
 
   const resvg = new Resvg(svg, {
     fitTo: {

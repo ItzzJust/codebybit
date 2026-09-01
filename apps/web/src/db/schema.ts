@@ -1,4 +1,12 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import {
+  json,
+  pgTable,
+  real,
+  text,
+  timestamp,
+  boolean,
+  integer,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   createdAt: timestamp("created_at").notNull(),
@@ -48,4 +56,25 @@ export const verification = pgTable("verification", {
   identifier: text("identifier").notNull(),
   updatedAt: timestamp("updated_at"),
   value: text("value").notNull(),
+});
+
+export const resource = pgTable("resource", {
+  attributes: json("attributes")
+    .$type<Record<string, string[]>>()
+    .notNull()
+    .default({}),
+  authorId: text("author_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  category: text("category"),
+  createdAt: timestamp("created_at").notNull(),
+  description: text("description").notNull(),
+  downloads: integer("downloads").notNull().default(0),
+  id: text("id").primaryKey(),
+  /** Price in USD; 0 means free. */
+  price: real("price").notNull().default(0),
+  section: text("section").notNull(),
+  tags: json("tags").$type<string[]>().notNull().default([]),
+  title: text("title").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
 });

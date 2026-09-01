@@ -1,5 +1,5 @@
-import { Markdown } from "@tanstack/markdown/react";
 import { Badge, Button, Card, CardContent } from "@codebybit/ui";
+import { Markdown } from "@tanstack/markdown/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -10,12 +10,26 @@ import {
   Tag,
   User,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
-import { resourcesBySection } from "@/components/minecraft/resources";
-import type { Resource } from "@/components/minecraft/resources";
 import type { FilterSection } from "@/components/minecraft/filters";
 import { formatDownloads, formatPrice } from "@/lib/formatting";
 import { seo } from "@/lib/seo";
+
+interface DbResource {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  section: string;
+  category: string | null;
+  authorId: string;
+  downloads: number;
+  tags: string[];
+  attributes: Record<string, string[]>;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const SECTION_LABELS = {
   builds: "Builds",
@@ -30,44 +44,91 @@ const SECTION_LABELS = {
   skripts: "Skripts",
 } as const;
 
-// Find resource by clean ID (without section prefix)
-function findResourceByCleanId(
-  cleanId: string,
-): { resource: Resource; section: FilterSection } | undefined {
-  for (const [section, resources] of Object.entries(resourcesBySection)) {
-    // Check both exact match and with section prefix
-    const resource = resources.find(
-      (r) => r.id === cleanId || r.id === `${section}-${cleanId}`,
-    );
-    if (resource) {
-      return { resource, section: section as FilterSection };
-    }
-  }
-  return undefined;
-}
-
 export const Route = createFileRoute(
-  "/resources/minecraft/resource/plugin/$resourceId",
+  "/resources/minecraft/resource/plugin/$resourceId"
 )({
-  head: ({ params }) => {
-    const result = findResourceByCleanId(params.resourceId);
-    const title = result?.resource.name ?? "Resource";
-    const description =
-      result?.resource.description ?? "View resource details on CodeByBit";
-    return seo({
-      title,
-      description,
-      path: `/resources/minecraft/resource/plugin/${params.resourceId}`,
-    });
-  },
+  head: () =>
+    seo({
+      title: "Resource",
+      description: "View resource details on CodeByBit",
+      path: "/resources/minecraft/resource/plugin",
+    }),
   component: ResourceDetailPage,
 });
 
 function ResourceDetailPage() {
   const { resourceId } = Route.useParams();
-  const result = findResourceByCleanId(resourceId);
+  const [resource, setResource] = useState<DbResource | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  if (!result) {
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchResource = async () => {
+      setIsLoading(true);
+      setNotFound(false);
+      try {
+        // Try fetching with section prefix first, then without
+        const sections = [
+          "plugins",
+          "builds",
+          "configs",
+          "graphics-textures",
+          "models",
+          "mods",
+          "other",
+          "server-jars",
+          "setups",
+          "skripts",
+        ];
+
+        for (const section of sections) {
+          const response = await fetch(
+            `/api/resources/${section}-${resourceId}`,
+            { signal: controller.signal }
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setResource(data);
+            return;
+          }
+        }
+
+        // Try without section prefix
+        const response = await fetch(`/api/resources/${resourceId}`, {
+          signal: controller.signal,
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setResource(data);
+        } else {
+          setNotFound(true);
+        }
+      } catch {
+        // Ignore abort errors
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchResource();
+    return () => controller.abort();
+  }, [resourceId]);
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8">
+        <div className="bg-muted h-8 w-32 animate-pulse rounded" />
+        <div className="space-y-4">
+          <div className="bg-muted h-10 w-3/4 animate-pulse rounded" />
+          <div className="bg-muted h-4 w-1/2 animate-pulse rounded" />
+        </div>
+      </div>
+    );
+  }
+
+  if (notFound || !resource) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 px-4 text-center">
         <h1 className="text-2xl font-bold">Resource not found</h1>
@@ -85,13 +146,25 @@ function ResourceDetailPage() {
     );
   }
 
-  const { resource, section } = result;
-  // SAFETY: section is a valid key from the resource data structure
-  const sectionLabel = SECTION_LABELS[section as keyof typeof SECTION_LABELS] ?? section;
+  const section = resource.section as FilterSection;
+  const sectionLabel =
+    SECTION_LABELS[section as keyof typeof SECTION_LABELS] ?? section;
   const sectionHref = `/resources/minecraft/${section}` as const;
   const attributeEntries = Object.entries(resource.attributes).filter(
-    ([, values]) => values && values.length > 0,
+    ([, values]) => values && values.length > 0
   );
+
+  const createdDate = new Date(resource.createdAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const updatedDate = new Date(resource.updatedAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8">
@@ -108,7 +181,7 @@ function ResourceDetailPage() {
       <header className="space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            {resource.name}
+            {resource.title}
           </h1>
           <Badge
             variant={resource.price === 0 ? "secondary" : "default"}
@@ -121,7 +194,7 @@ function ResourceDetailPage() {
         <div className="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
           <span className="flex items-center gap-1.5">
             <User className="size-4" />
-            {resource.author}
+            {resource.authorId}
           </span>
           <span className="flex items-center gap-1.5">
             <Download className="size-4" />
@@ -179,8 +252,12 @@ function ResourceDetailPage() {
                         {key.replaceAll("_", " ")}
                       </p>
                       <div className="flex flex-wrap gap-1.5">
-                        {values?.map((v) => (
-                          <Badge key={v} variant="secondary" className="text-xs">
+                        {values.map((v) => (
+                          <Badge
+                            key={v}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {v}
                           </Badge>
                         ))}
@@ -242,7 +319,7 @@ function ResourceDetailPage() {
                 </p>
                 <p className="flex items-center justify-center gap-1.5">
                   <Eye className="size-4" />
-                  Last updated 2 days ago
+                  Last updated {updatedDate}
                 </p>
               </div>
             </CardContent>
@@ -259,9 +336,9 @@ function ResourceDetailPage() {
                   <User className="text-muted-foreground size-5" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">{resource.author}</p>
+                  <p className="text-sm font-medium">{resource.authorId}</p>
                   <p className="text-muted-foreground text-xs">
-                    Member since 2023
+                    Listed {createdDate}
                   </p>
                 </div>
               </div>

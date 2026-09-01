@@ -21,7 +21,7 @@ async function fetchVersions(): Promise<string[]> {
 
   if (!response.ok) {
     throw new Error(
-      `Failed to fetch Minecraft versions: ${response.status} ${response.statusText}`,
+      `Failed to fetch Minecraft versions: ${response.status} ${response.statusText}`
     );
   }
 
@@ -31,7 +31,7 @@ async function fetchVersions(): Promise<string[]> {
 
   const sorted = [...releases].sort(
     (a, b) =>
-      new Date(b.releaseTime).getTime() - new Date(a.releaseTime).getTime(),
+      new Date(b.releaseTime).getTime() - new Date(a.releaseTime).getTime()
   );
 
   return sorted.map((v) => v.id);
@@ -65,5 +65,5 @@ export const fetchMinecraftVersions = createServerFn({ method: "GET" }).handler(
           : "Failed to fetch Minecraft versions";
       throw new Error(message, { cause: error });
     }
-  },
+  }
 );

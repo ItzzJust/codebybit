@@ -2,7 +2,7 @@
 
 A marketplace for Minecraft digital resources — a [BuiltByBit](https://builtbybit.com) remake. Buy and sell plugins, skripts, builds, mods, setups, graphics, and more.
 
-![TanStack Start](https://img.shields.io/badge/TanStack_Start-black?logo=react&logoColor=61DAFB) ![React 19](https://img.shields.io/badge/React_19-20232A?logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) ![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?logo=tailwindcss&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-F9F1E1?logo=bun&logoColor=black) ![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?logo=turborepo&logoColor=white)
+![TanStack Start](https://img.shields.io/badge/TanStack_Start-black?logo=react&logoColor=61DAFB) ![React 19](https://img.shields.io/badge/React_19-20232A?logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) ![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?logo=tailwindcss&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-F9F1E1?logo=bun&logoColor=black) ![Moonrepo](https://img.shields.io/badge/Moonrepo-6D5CFF?logo=moonrepo&logoColor=white)
 
 ## Documentation
 
@@ -41,7 +41,7 @@ A marketplace for Minecraft digital resources — a [BuiltByBit](https://builtby
 | Lint/format     | Ultracite (oxlint + oxfmt)              |
 | Testing         | Vitest + Testing Library                |
 | Package manager | Bun                                     |
-| Task runner     | Just + Turborepo                        |
+| Task runner     | Just + Moonrepo                         |
 | Toolchains      | mise                                    |
 
 ## Project structure
@@ -58,7 +58,7 @@ builtbybit-remake/
 │   └── ui/               # Shared UI library (@codebybit/ui)
 ├── justfile              # Task runner recipes
 ├── mise.toml             # Tool versions (bun, node)
-└── turbo.json            # Turborepo pipeline
+└── .moon/                # Moonrepo configuration
 ```
 
 ## Getting started
@@ -97,7 +97,7 @@ The app runs at **http://localhost:3000**.
 
 ## Commands
 
-Prefer `just`. Under the hood these run `bun run <script>`, which Turbo pipes to the correct workspace.
+Prefer `just`. Under the hood these run `moon run`, which pipes to the correct workspace.
 
 | Command            | Description                                    |
 | ------------------ | ---------------------------------------------- |
@@ -116,7 +116,7 @@ Prefer `just`. Under the hood these run `bun run <script>`, which Turbo pipes to
 | `just db-migrate`  | Apply database migrations                      |
 | `just db-studio`   | Open Drizzle Studio                            |
 
-Raw Turbo usage: `turbo run dev --filter=@codebybit/web`.
+Raw Moon usage: `moon run web:dev`.
 
 ## Database
 
