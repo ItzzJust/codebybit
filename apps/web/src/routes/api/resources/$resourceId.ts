@@ -1,18 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { eq } from "drizzle-orm";
 
-import { db } from "@/db";
-import { resource } from "@/db/schema";
+import { auth } from "@/lib/auth";
+import { resourceService } from "@/lib/resources";
 
 export const Route = createFileRoute("/api/resources/$resourceId")({
   server: {
     handlers: {
       GET: async ({ params }) => {
-        const [row] = await db
-          .select()
-          .from(resource)
-          .where(eq(resource.id, params.resourceId))
-          .limit(1);
+        const row = await resourceService.getById(params.resourceId);
 
         if (!row) {
           return Response.json({ error: "Not found" }, { status: 404 });
@@ -22,56 +17,77 @@ export const Route = createFileRoute("/api/resources/$resourceId")({
       },
 
       PUT: async ({ params, request }) => {
+        // Auth check
+        const session = await auth.api.getSession({
+          headers: Object.fromEntries(request.headers),
+        });
+        if (!session) {
+          return Response.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const existing = await resourceService.getById(params.resourceId);
+        if (!existing) {
+          return Response.json({ error: "Not found" }, { status: 404 });
+        }
+
+        // Ownership check
+        if (existing.authorId !== session.user.id) {
+          return Response.json({ error: "Forbidden" }, { status: 403 });
+        }
+
         const body = await request.json();
+
         const {
-          title,
+          attributes,
+          category,
           description,
           price,
           section,
-          category,
           tags,
-          attributes,
+          title,
         } = body as {
-          title?: string;
+          attributes?: Record<string, string[]>;
+          category?: string;
           description?: string;
           price?: number;
           section?: string;
-          category?: string;
           tags?: string[];
-          attributes?: Record<string, string[]>;
+          title?: string;
         };
 
-        const [row] = await db
-          .update(resource)
-          .set({
-            ...(title !== undefined && { title }),
-            ...(description !== undefined && { description }),
-            ...(price !== undefined && { price }),
-            ...(section !== undefined && { section }),
-            ...(category !== undefined && { category }),
-            ...(tags !== undefined && { tags }),
-            ...(attributes !== undefined && { attributes }),
-            updatedAt: new Date(),
-          })
-          .where(eq(resource.id, params.resourceId))
-          .returning();
-
-        if (!row) {
-          return Response.json({ error: "Not found" }, { status: 404 });
-        }
+        const row = await resourceService.update(params.resourceId, {
+          ...(attributes !== undefined && { attributes }),
+          ...(category !== undefined && { category }),
+          ...(description !== undefined && { description }),
+          ...(price !== undefined && { price }),
+          ...(section !== undefined && { section }),
+          ...(tags !== undefined && { tags }),
+          ...(title !== undefined && { title }),
+        });
 
         return Response.json(row);
       },
 
-      DELETE: async ({ params }) => {
-        const [row] = await db
-          .delete(resource)
-          .where(eq(resource.id, params.resourceId))
-          .returning();
+      DELETE: async ({ params, request }) => {
+        // Auth check
+        const session = await auth.api.getSession({
+          headers: Object.fromEntries(request.headers),
+        });
+        if (!session) {
+          return Response.json({ error: "Unauthorized" }, { status: 401 });
+        }
 
-        if (!row) {
+        const existing = await resourceService.getById(params.resourceId);
+        if (!existing) {
           return Response.json({ error: "Not found" }, { status: 404 });
         }
+
+        // Ownership check
+        if (existing.authorId !== session.user.id) {
+          return Response.json({ error: "Forbidden" }, { status: 403 });
+        }
+
+        const row = await resourceService.delete(params.resourceId);
 
         return Response.json({ success: true });
       },

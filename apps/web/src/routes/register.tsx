@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
 
 import { AuthLayout } from "@/components/auth-layout";
 import { SignUpForm } from "@/components/auth/sign-up-form";
@@ -21,12 +22,10 @@ export const Route = createFileRoute("/register")({
 function RegisterPage() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<SignUpStatus>("idle");
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   const handleSubmit = useCallback(
     async (values: { name: string; email: string; password: string }) => {
       setStatus("loading");
-      setErrorMessage(undefined);
 
       const { error } = await authClient.signUp.email({
         email: values.email,
@@ -36,7 +35,7 @@ function RegisterPage() {
 
       if (error) {
         setStatus("error");
-        setErrorMessage(error.message || "Could not create account.");
+        toast.error(error.message || "Could not create account.");
         return;
       }
 
@@ -50,7 +49,6 @@ function RegisterPage() {
     <AuthLayout>
       <SignUpForm
         status={status}
-        errorMessage={errorMessage}
         onSubmit={handleSubmit}
         footer={
           <p>

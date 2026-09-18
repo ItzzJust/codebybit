@@ -16,10 +16,10 @@ preview: # Preview the production build
 
 # Quality --------------------------------------------------------------------
 check: # Lint and format check
-  bun run check
+  pnpm run check
 
 fix: # Auto-fix lint and format issues
-  bun run fix
+  pnpm run fix
 
 typecheck: # Type-check all workspaces
   moon run :typecheck
@@ -46,7 +46,7 @@ db-studio: # Open Drizzle Studio
 # Environment ----------------------------------------------------------------
 install: # Install dependencies and toolchains
   mise install
-  bun install
+  pnpm install
 
 env: # Scaffold apps/web/.env.local from .env.example
   cp apps/web/.env.example apps/web/.env.local

@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
 
 import { AuthLayout } from "@/components/auth-layout";
 import { SignInForm } from "@/components/auth/sign-in-form";
@@ -21,21 +22,29 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<SignInStatus>("idle");
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   const handleSubmit = useCallback(
     async (values: { email: string; password: string }) => {
       setStatus("loading");
-      setErrorMessage(undefined);
 
-      const { error } = await authClient.signIn.email({
-        email: values.email,
-        password: values.password,
-      });
+      // Check if the input looks like an email
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(values.email);
+
+      const result = isEmail
+        ? await authClient.signIn.email({
+            email: values.email,
+            password: values.password,
+          })
+        : await authClient.signIn.username({
+            username: values.email,
+            password: values.password,
+          });
+
+      const { error } = result;
 
       if (error) {
         setStatus("error");
-        setErrorMessage(error.message || "Invalid email or password.");
+        toast.error(error.message || "Invalid credentials.");
         return;
       }
 
@@ -49,7 +58,6 @@ function LoginPage() {
     <AuthLayout>
       <SignInForm
         status={status}
-        errorMessage={errorMessage}
         onSubmit={handleSubmit}
         footer={
           <p>

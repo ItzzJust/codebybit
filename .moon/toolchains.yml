@@ -1,6 +1,8 @@
-javascript:
-  packageManager: "bun"
+node: {}
 
-bun: {}
+javascript:
+  packageManager: "pnpm"
+
+pnpm: {}
 
 typescript: {}

@@ -57,13 +57,13 @@ tasks:
     preset: "server"
 
   check:
-    command: "bun x ultracite check"
+    command: "pnpm exec ultracite check"
     inputs:
       - "@group(sources)"
       - "@group(configs)"
 
   fix:
-    command: "bun x ultracite fix"
+    command: "pnpm exec ultracite fix"
     inputs:
       - "@group(sources)"
       - "@group(configs)"

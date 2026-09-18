@@ -4,8 +4,16 @@ import { Layers } from "lucide-react";
 import { m, useReducedMotion } from "motion/react";
 
 import { resourceCategories } from "@/data/resource-categories";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/resources/")({
+  head: () =>
+    seo({
+      title: "Resources",
+      description:
+        "Browse our collection of digital assets across all categories. Find everything you need for your Minecraft server, Roblox game, website, or Discord community.",
+      path: "/resources",
+    }),
   component: ResourcesPage,
 });
 

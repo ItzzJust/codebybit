@@ -1,7 +1,7 @@
 import { Button } from "@codebybit/ui/components/ui/button";
 import { Input } from "@codebybit/ui/components/ui/input";
 import { Label } from "@codebybit/ui/components/ui/label";
-import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Loader2, User, Lock } from "lucide-react";
 import { useCallback, useState } from "react";
 
 export interface SignInValues {
@@ -13,14 +13,12 @@ export type SignInStatus = "idle" | "loading" | "success" | "error";
 
 interface SignInFormProps {
   status?: SignInStatus;
-  errorMessage?: string;
   onSubmit?: (values: SignInValues) => void | Promise<void>;
   footer?: React.ReactNode;
 }
 
 export function SignInForm({
   status = "idle",
-  errorMessage,
   onSubmit,
   footer,
 }: SignInFormProps) {
@@ -41,9 +39,7 @@ export function SignInForm({
   const validate = useCallback((vals: SignInValues) => {
     const errs: Partial<Record<keyof SignInValues, string>> = {};
     if (!vals.email.trim()) {
-      errs.email = "Enter your email.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(vals.email)) {
-      errs.email = "Enter a valid email address.";
+      errs.email = "Enter your email or username.";
     }
     if (!vals.password) {
       errs.password = "Enter your password.";
@@ -76,15 +72,14 @@ export function SignInForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">Email or Username</Label>
         <div className="relative">
-          <Mail className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+          <User className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <Input
             id="email"
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            placeholder="you@example.com"
+            type="text"
+            autoComplete="username"
+            placeholder="you@example.com or username"
             disabled={isSubmitting}
             value={values.email}
             onChange={(e) => updateField("email", e.target.value)}
@@ -132,12 +127,6 @@ export function SignInForm({
           <p className="text-destructive text-xs">{errors.password}</p>
         )}
       </div>
-
-      {errorMessage && (
-        <div className="bg-destructive/10 text-destructive rounded-lg px-3 py-2 text-sm">
-          {errorMessage}
-        </div>
-      )}
 
       <Button type="submit" disabled={isSubmitting} className="w-full">
         {isSubmitting ? (

@@ -3,13 +3,19 @@
   "mcp": {
     "shadcn": {
       "type": "local",
-      "command": ["sh", "-c", "exec bun x shadcn@latest mcp"],
+      "command": ["sh", "-c", "exec pnpm dlx shadcn@latest mcp"],
       "enabled": true,
       "environment": {}
     },
     "beui": {
       "type": "remote",
       "url": "https://mcp.beui.dev/mcp",
+      "enabled": true,
+      "environment": {}
+    },
+    "better-auth": {
+      "type": "remote",
+      "url": "https://mcp.better-auth.com/mcp",
       "enabled": true,
       "environment": {}
     }

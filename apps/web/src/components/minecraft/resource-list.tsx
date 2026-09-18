@@ -4,37 +4,12 @@ import { Download, ExternalLink, Plus, User } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { formatDownloads, formatPrice } from "@/lib/formatting";
+import { listResources } from "@/server/functions/resources";
+import { SECTION_LABELS } from "@/types/resource";
+import type { Resource } from "@/types/resource";
 
 import type { FilterSection } from "./filters";
 import { getActiveSection } from "./filters";
-
-interface DbResource {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  section: string;
-  category: string | null;
-  authorId: string;
-  downloads: number;
-  tags: string[];
-  attributes: Record<string, string[]>;
-  createdAt: string;
-  updatedAt: string;
-}
-
-const SECTION_TITLES = {
-  builds: "Builds",
-  configs: "Configurations",
-  "graphics-textures": "Graphics & Textures",
-  models: "Models",
-  mods: "Mods",
-  other: "Other",
-  plugins: "Plugins",
-  "server-jars": "Server Jars",
-  setups: "Server Setups",
-  skripts: "Skripts",
-} as const satisfies Record<FilterSection, string>;
 
 // Strip section prefix from resource ID (e.g., "plugin-vaultx" -> "vaultx")
 function stripSectionPrefix(id: string, section: string): string {
@@ -46,7 +21,7 @@ function ResourceCard({
   resource,
   section,
 }: {
-  resource: DbResource;
+  resource: Resource;
   section: FilterSection;
 }) {
   const attributeValues = Object.values(resource.attributes).flat().slice(0, 3);
@@ -55,7 +30,7 @@ function ResourceCard({
 
   return (
     <Link
-      to="/resources/minecraft/resource/plugin/$resourceId"
+      to="/resources/minecraft/$resourceId"
       params={{ resourceId: cleanId }}
       className="group/card border-border/50 bg-muted/20 hover:border-primary/30 hover:bg-muted/40 flex h-full flex-col overflow-hidden rounded-2xl border p-5 transition-all duration-300 hover:shadow-lg"
     >
@@ -92,17 +67,13 @@ function ResourceCard({
               <Badge
                 key={value}
                 variant="outline"
-                className="text-[11px] font-normal"
+                className="text-xs font-normal"
               >
                 {value}
               </Badge>
             ))}
             {tagValues.map((tag) => (
-              <Badge
-                key={tag}
-                variant="ghost"
-                className="text-[11px] font-normal"
-              >
+              <Badge key={tag} variant="ghost" className="text-xs font-normal">
                 {tag}
               </Badge>
             ))}
@@ -148,11 +119,9 @@ function EmptyState({ onClear }: { onClear: () => void }) {
         <Button variant="outline" size="sm" onClick={onClear}>
           Clear filters
         </Button>
-        <Button size="sm" asChild>
-          <Link to="/resources/minecraft/new">
-            <Plus className="size-4" />
-            Submit Resource
-          </Link>
+        <Button size="sm" render={<Link to="/resources/new" />}>
+          <Plus className="size-4" />
+          Submit Resource
         </Button>
       </div>
     </div>
@@ -165,7 +134,7 @@ export function ResourceList() {
   });
   const navigate = useNavigate();
 
-  const [resources, setResources] = useState<DbResource[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const section = getActiveSection(pathname);
@@ -175,27 +144,28 @@ export function ResourceList() {
       return;
     }
 
-    const controller = new AbortController();
+    let cancelled = false;
 
     const fetchResources = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/resources?section=${section}`, {
-          signal: controller.signal,
-        });
-        if (response.ok) {
-          const data = await response.json();
+        const data = await listResources({ data: { section } });
+        if (!cancelled) {
           setResources(data);
         }
       } catch {
-        // Ignore abort errors
+        // Ignore errors
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchResources();
-    return () => controller.abort();
+    return () => {
+      cancelled = true;
+    };
   }, [section]);
 
   if (!section) {
@@ -211,19 +181,19 @@ export function ResourceList() {
       <header className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            {SECTION_TITLES[section as keyof typeof SECTION_TITLES]}
+            {SECTION_LABELS[section as keyof typeof SECTION_LABELS]}
           </h1>
           <p className="text-muted-foreground text-sm">
             {isLoading
               ? "Loading..."
-              : `${resources.length} resource${resources.length === 1 ? "" : "s"}`}
+              : (resources.length === 0
+                ? "No resources"
+                : `${resources.length} resource${resources.length === 1 ? "" : "s"}`)}
           </p>
         </div>
-        <Button size="sm" asChild>
-          <Link to="/resources/minecraft/new">
-            <Plus className="size-4" />
-            Submit
-          </Link>
+        <Button size="sm" render={<Link to="/resources/new" />}>
+          <Plus className="size-4" />
+          Submit
         </Button>
       </header>
 

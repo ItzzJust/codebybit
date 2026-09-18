@@ -1,10 +1,6 @@
 {
   "name": "codebybit",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "type": "module",
   "scripts": {
     "dev": "moon run :dev",
@@ -13,9 +9,9 @@
     "typecheck": "moon run :typecheck",
     "test": "moon run :test",
     "test:watch": "moon run :test-watch",
-    "check": "bun x ultracite check",
-    "fix": "bun x ultracite fix",
-    "doctor": "bun x ultracite doctor",
+    "check": "pnpm exec ultracite check",
+    "fix": "pnpm exec ultracite fix",
+    "doctor": "pnpm exec ultracite doctor",
     "db:generate": "moon run web:db-generate",
     "db:push": "moon run web:db-push",
     "db:migrate": "moon run web:db-migrate",
@@ -24,23 +20,22 @@
   },
   "dependencies": {
     "@tanstack/markdown": "^0.0.13",
-    "@tanstack/react-hotkeys": "^0.10.0"
+    "@tanstack/react-hotkeys": "^0.10.0",
+    "ioredis": "^6.0.0",
+    "sonner": "^2.0.8"
   },
   "devDependencies": {
     "@moonrepo/cli": "^2.5.3",
     "eslint-plugin-sonarjs": "^4.2.0",
-    "oxfmt": "^0.63.0",
-    "oxlint": "^1.79.0",
-    "oxlint-plugin-react-doctor": "^0.7.8",
+    "oxfmt": "^0.66.0",
+    "oxlint": "^1.81.0",
+    "oxlint-plugin-react-doctor": "^0.9.12",
     "react-doctor": "^0.9.12",
-    "ultracite": "7.10.4"
+    "ultracite": "7.10.7"
   },
   "engines": {
-    "bun": ">=1.3.14",
-    "node": ">=22.12"
+    "node": ">=22.12",
+    "pnpm": ">=10"
   },
-  "packageManager": "bun@1.3.14",
-  "trustedDependencies": [
-    "@moonrepo/cli"
-  ]
+  "packageManager": "pnpm@10.15.0"
 }

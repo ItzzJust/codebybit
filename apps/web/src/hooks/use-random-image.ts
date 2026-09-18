@@ -1,16 +1,28 @@
-import { draw, group } from "radash";
 import { useEffect, useState } from "react";
 
 const rawImages = import.meta.glob<string>(
-  "/{minecraft,roblox,websites,discord}/*.{png,jpg,jpeg,webp,avif}",
+  "/public/{minecraft,roblox,websites,discord}/*.{png,jpg,jpeg,webp,avif}",
   { eager: true, import: "default", query: "?url" }
 );
 
 const imagePaths = Object.keys(rawImages);
-const imagesByCategory = group(
-  imagePaths,
-  (path) => path.split("/")[1] ?? "uncategorized"
-);
+
+// Group images by category (replaces radash `group`)
+const imagesByCategory: Record<string, string[]> = {};
+for (const path of imagePaths) {
+  // Path format: /public/minecraft/0.png → category = "minecraft"
+  const category = path.split("/")[2] ?? "uncategorized";
+  if (!imagesByCategory[category]) {
+    imagesByCategory[category] = [];
+  }
+  imagesByCategory[category].push(path);
+}
+
+// Pick a random item from an array (replaces radash `draw`)
+function pickRandom<T>(arr: T[]): T | undefined {
+  if (arr.length === 0) {return undefined;}
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 export function useRandomImage(
   categoryId: string,
@@ -26,7 +38,7 @@ export function useRandomImage(
 
     const selectRandom = () => {
       const pool = imagesByCategory[categoryId] ?? [];
-      const selected = draw(pool) ?? defaultSrc;
+      const selected = pickRandom(pool) ?? defaultSrc;
 
       setIsLoaded(false);
       setSrc(selected);

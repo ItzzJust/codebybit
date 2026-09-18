@@ -12,13 +12,19 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CreditsRouteImport } from './routes/credits'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as TosRouteImport } from './routes/tos'
 import { Route as ApiOgRouteImport } from './routes/api/og'
 import { Route as ResourcesIndexRouteImport } from './routes/resources/index'
 import { Route as ResourcesMinecraftRouteRouteImport } from './routes/resources/minecraft/route'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiResourcesIndexRouteImport } from './routes/api/resources/index'
+import { Route as ApiResourcesResourceIdRouteImport } from './routes/api/resources/$resourceId'
 import { Route as ResourcesDiscordIndexRouteImport } from './routes/resources/discord/index'
 import { Route as ResourcesMinecraftIndexRouteImport } from './routes/resources/minecraft/index'
+import { Route as ResourcesMinecraftResourceIdRouteImport } from './routes/resources/minecraft/$resourceId'
 import { Route as ResourcesMinecraftBuildsRouteImport } from './routes/resources/minecraft/builds'
 import { Route as ResourcesMinecraftConfigsRouteImport } from './routes/resources/minecraft/configs'
 import { Route as ResourcesMinecraftGraphicsTexturesRouteImport } from './routes/resources/minecraft/graphics-textures'
@@ -29,9 +35,9 @@ import { Route as ResourcesMinecraftPluginsRouteImport } from './routes/resource
 import { Route as ResourcesMinecraftServerJarsRouteImport } from './routes/resources/minecraft/server-jars'
 import { Route as ResourcesMinecraftSetupsRouteImport } from './routes/resources/minecraft/setups'
 import { Route as ResourcesMinecraftSkriptsRouteImport } from './routes/resources/minecraft/skripts'
+import { Route as ResourcesNewIndexRouteImport } from './routes/resources/new/index'
 import { Route as ResourcesRobloxIndexRouteImport } from './routes/resources/roblox/index'
 import { Route as ResourcesWebsitesIndexRouteImport } from './routes/resources/websites/index'
-import { Route as ResourcesMinecraftResourcePluginResourceIdRouteImport } from './routes/resources/minecraft/resource/plugin/$resourceId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -48,9 +54,24 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundsRoute = RefundsRouteImport.update({
+  id: '/refunds',
+  path: '/refunds',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TosRoute = TosRouteImport.update({
+  id: '/tos',
+  path: '/tos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiOgRoute = ApiOgRouteImport.update({
@@ -73,6 +94,16 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiResourcesIndexRoute = ApiResourcesIndexRouteImport.update({
+  id: '/api/resources/',
+  path: '/api/resources/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiResourcesResourceIdRoute = ApiResourcesResourceIdRouteImport.update({
+  id: '/api/resources/$resourceId',
+  path: '/api/resources/$resourceId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesDiscordIndexRoute = ResourcesDiscordIndexRouteImport.update({
   id: '/resources/discord/',
   path: '/resources/discord/',
@@ -83,6 +114,12 @@ const ResourcesMinecraftIndexRoute = ResourcesMinecraftIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ResourcesMinecraftRouteRoute,
 } as any)
+const ResourcesMinecraftResourceIdRoute =
+  ResourcesMinecraftResourceIdRouteImport.update({
+    id: '/$resourceId',
+    path: '/$resourceId',
+    getParentRoute: () => ResourcesMinecraftRouteRoute,
+  } as any)
 const ResourcesMinecraftBuildsRoute =
   ResourcesMinecraftBuildsRouteImport.update({
     id: '/builds',
@@ -141,6 +178,11 @@ const ResourcesMinecraftSkriptsRoute =
     path: '/skripts',
     getParentRoute: () => ResourcesMinecraftRouteRoute,
   } as any)
+const ResourcesNewIndexRoute = ResourcesNewIndexRouteImport.update({
+  id: '/resources/new/',
+  path: '/resources/new/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesRobloxIndexRoute = ResourcesRobloxIndexRouteImport.update({
   id: '/resources/roblox/',
   path: '/resources/roblox/',
@@ -151,22 +193,21 @@ const ResourcesWebsitesIndexRoute = ResourcesWebsitesIndexRouteImport.update({
   path: '/resources/websites/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResourcesMinecraftResourcePluginResourceIdRoute =
-  ResourcesMinecraftResourcePluginResourceIdRouteImport.update({
-    id: '/resource/plugin/$resourceId',
-    path: '/resource/plugin/$resourceId',
-    getParentRoute: () => ResourcesMinecraftRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/credits': typeof CreditsRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
   '/register': typeof RegisterRoute
+  '/tos': typeof TosRoute
   '/resources/minecraft': typeof ResourcesMinecraftRouteRouteWithChildren
   '/api/og': typeof ApiOgRoute
   '/resources/': typeof ResourcesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/resources/$resourceId': typeof ApiResourcesResourceIdRoute
+  '/resources/minecraft/$resourceId': typeof ResourcesMinecraftResourceIdRoute
   '/resources/minecraft/builds': typeof ResourcesMinecraftBuildsRoute
   '/resources/minecraft/configs': typeof ResourcesMinecraftConfigsRoute
   '/resources/minecraft/graphics-textures': typeof ResourcesMinecraftGraphicsTexturesRoute
@@ -177,20 +218,26 @@ export interface FileRoutesByFullPath {
   '/resources/minecraft/server-jars': typeof ResourcesMinecraftServerJarsRoute
   '/resources/minecraft/setups': typeof ResourcesMinecraftSetupsRoute
   '/resources/minecraft/skripts': typeof ResourcesMinecraftSkriptsRoute
+  '/api/resources/': typeof ApiResourcesIndexRoute
   '/resources/discord/': typeof ResourcesDiscordIndexRoute
   '/resources/minecraft/': typeof ResourcesMinecraftIndexRoute
+  '/resources/new/': typeof ResourcesNewIndexRoute
   '/resources/roblox/': typeof ResourcesRobloxIndexRoute
   '/resources/websites/': typeof ResourcesWebsitesIndexRoute
-  '/resources/minecraft/resource/plugin/$resourceId': typeof ResourcesMinecraftResourcePluginResourceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/credits': typeof CreditsRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
   '/register': typeof RegisterRoute
+  '/tos': typeof TosRoute
   '/api/og': typeof ApiOgRoute
   '/resources': typeof ResourcesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/resources/$resourceId': typeof ApiResourcesResourceIdRoute
+  '/resources/minecraft/$resourceId': typeof ResourcesMinecraftResourceIdRoute
   '/resources/minecraft/builds': typeof ResourcesMinecraftBuildsRoute
   '/resources/minecraft/configs': typeof ResourcesMinecraftConfigsRoute
   '/resources/minecraft/graphics-textures': typeof ResourcesMinecraftGraphicsTexturesRoute
@@ -201,22 +248,28 @@ export interface FileRoutesByTo {
   '/resources/minecraft/server-jars': typeof ResourcesMinecraftServerJarsRoute
   '/resources/minecraft/setups': typeof ResourcesMinecraftSetupsRoute
   '/resources/minecraft/skripts': typeof ResourcesMinecraftSkriptsRoute
+  '/api/resources': typeof ApiResourcesIndexRoute
   '/resources/discord': typeof ResourcesDiscordIndexRoute
   '/resources/minecraft': typeof ResourcesMinecraftIndexRoute
+  '/resources/new': typeof ResourcesNewIndexRoute
   '/resources/roblox': typeof ResourcesRobloxIndexRoute
   '/resources/websites': typeof ResourcesWebsitesIndexRoute
-  '/resources/minecraft/resource/plugin/$resourceId': typeof ResourcesMinecraftResourcePluginResourceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/credits': typeof CreditsRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
   '/register': typeof RegisterRoute
+  '/tos': typeof TosRoute
   '/resources/minecraft': typeof ResourcesMinecraftRouteRouteWithChildren
   '/api/og': typeof ApiOgRoute
   '/resources/': typeof ResourcesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/resources/$resourceId': typeof ApiResourcesResourceIdRoute
+  '/resources/minecraft/$resourceId': typeof ResourcesMinecraftResourceIdRoute
   '/resources/minecraft/builds': typeof ResourcesMinecraftBuildsRoute
   '/resources/minecraft/configs': typeof ResourcesMinecraftConfigsRoute
   '/resources/minecraft/graphics-textures': typeof ResourcesMinecraftGraphicsTexturesRoute
@@ -227,11 +280,12 @@ export interface FileRoutesById {
   '/resources/minecraft/server-jars': typeof ResourcesMinecraftServerJarsRoute
   '/resources/minecraft/setups': typeof ResourcesMinecraftSetupsRoute
   '/resources/minecraft/skripts': typeof ResourcesMinecraftSkriptsRoute
+  '/api/resources/': typeof ApiResourcesIndexRoute
   '/resources/discord/': typeof ResourcesDiscordIndexRoute
   '/resources/minecraft/': typeof ResourcesMinecraftIndexRoute
+  '/resources/new/': typeof ResourcesNewIndexRoute
   '/resources/roblox/': typeof ResourcesRobloxIndexRoute
   '/resources/websites/': typeof ResourcesWebsitesIndexRoute
-  '/resources/minecraft/resource/plugin/$resourceId': typeof ResourcesMinecraftResourcePluginResourceIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -239,11 +293,16 @@ export interface FileRouteTypes {
     | '/'
     | '/credits'
     | '/login'
+    | '/privacy'
+    | '/refunds'
     | '/register'
+    | '/tos'
     | '/resources/minecraft'
     | '/api/og'
     | '/resources/'
     | '/api/auth/$'
+    | '/api/resources/$resourceId'
+    | '/resources/minecraft/$resourceId'
     | '/resources/minecraft/builds'
     | '/resources/minecraft/configs'
     | '/resources/minecraft/graphics-textures'
@@ -254,20 +313,26 @@ export interface FileRouteTypes {
     | '/resources/minecraft/server-jars'
     | '/resources/minecraft/setups'
     | '/resources/minecraft/skripts'
+    | '/api/resources/'
     | '/resources/discord/'
     | '/resources/minecraft/'
+    | '/resources/new/'
     | '/resources/roblox/'
     | '/resources/websites/'
-    | '/resources/minecraft/resource/plugin/$resourceId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/credits'
     | '/login'
+    | '/privacy'
+    | '/refunds'
     | '/register'
+    | '/tos'
     | '/api/og'
     | '/resources'
     | '/api/auth/$'
+    | '/api/resources/$resourceId'
+    | '/resources/minecraft/$resourceId'
     | '/resources/minecraft/builds'
     | '/resources/minecraft/configs'
     | '/resources/minecraft/graphics-textures'
@@ -278,21 +343,27 @@ export interface FileRouteTypes {
     | '/resources/minecraft/server-jars'
     | '/resources/minecraft/setups'
     | '/resources/minecraft/skripts'
+    | '/api/resources'
     | '/resources/discord'
     | '/resources/minecraft'
+    | '/resources/new'
     | '/resources/roblox'
     | '/resources/websites'
-    | '/resources/minecraft/resource/plugin/$resourceId'
   id:
     | '__root__'
     | '/'
     | '/credits'
     | '/login'
+    | '/privacy'
+    | '/refunds'
     | '/register'
+    | '/tos'
     | '/resources/minecraft'
     | '/api/og'
     | '/resources/'
     | '/api/auth/$'
+    | '/api/resources/$resourceId'
+    | '/resources/minecraft/$resourceId'
     | '/resources/minecraft/builds'
     | '/resources/minecraft/configs'
     | '/resources/minecraft/graphics-textures'
@@ -303,23 +374,30 @@ export interface FileRouteTypes {
     | '/resources/minecraft/server-jars'
     | '/resources/minecraft/setups'
     | '/resources/minecraft/skripts'
+    | '/api/resources/'
     | '/resources/discord/'
     | '/resources/minecraft/'
+    | '/resources/new/'
     | '/resources/roblox/'
     | '/resources/websites/'
-    | '/resources/minecraft/resource/plugin/$resourceId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreditsRoute: typeof CreditsRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
+  RefundsRoute: typeof RefundsRoute
   RegisterRoute: typeof RegisterRoute
+  TosRoute: typeof TosRoute
   ResourcesMinecraftRouteRoute: typeof ResourcesMinecraftRouteRouteWithChildren
   ApiOgRoute: typeof ApiOgRoute
   ResourcesIndexRoute: typeof ResourcesIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiResourcesResourceIdRoute: typeof ApiResourcesResourceIdRoute
+  ApiResourcesIndexRoute: typeof ApiResourcesIndexRoute
   ResourcesDiscordIndexRoute: typeof ResourcesDiscordIndexRoute
+  ResourcesNewIndexRoute: typeof ResourcesNewIndexRoute
   ResourcesRobloxIndexRoute: typeof ResourcesRobloxIndexRoute
   ResourcesWebsitesIndexRoute: typeof ResourcesWebsitesIndexRoute
 }
@@ -347,11 +425,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refunds': {
+      id: '/refunds'
+      path: '/refunds'
+      fullPath: '/refunds'
+      preLoaderRoute: typeof RefundsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tos': {
+      id: '/tos'
+      path: '/tos'
+      fullPath: '/tos'
+      preLoaderRoute: typeof TosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/og': {
@@ -382,6 +481,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/resources/': {
+      id: '/api/resources/'
+      path: '/api/resources'
+      fullPath: '/api/resources/'
+      preLoaderRoute: typeof ApiResourcesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/resources/$resourceId': {
+      id: '/api/resources/$resourceId'
+      path: '/api/resources/$resourceId'
+      fullPath: '/api/resources/$resourceId'
+      preLoaderRoute: typeof ApiResourcesResourceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources/discord/': {
       id: '/resources/discord/'
       path: '/resources/discord'
@@ -394,6 +507,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/resources/minecraft/'
       preLoaderRoute: typeof ResourcesMinecraftIndexRouteImport
+      parentRoute: typeof ResourcesMinecraftRouteRoute
+    }
+    '/resources/minecraft/$resourceId': {
+      id: '/resources/minecraft/$resourceId'
+      path: '/$resourceId'
+      fullPath: '/resources/minecraft/$resourceId'
+      preLoaderRoute: typeof ResourcesMinecraftResourceIdRouteImport
       parentRoute: typeof ResourcesMinecraftRouteRoute
     }
     '/resources/minecraft/builds': {
@@ -466,6 +586,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResourcesMinecraftSkriptsRouteImport
       parentRoute: typeof ResourcesMinecraftRouteRoute
     }
+    '/resources/new/': {
+      id: '/resources/new/'
+      path: '/resources/new'
+      fullPath: '/resources/new/'
+      preLoaderRoute: typeof ResourcesNewIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources/roblox/': {
       id: '/resources/roblox/'
       path: '/resources/roblox'
@@ -480,17 +607,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResourcesWebsitesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/resources/minecraft/resource/plugin/$resourceId': {
-      id: '/resources/minecraft/resource/plugin/$resourceId'
-      path: '/resource/plugin/$resourceId'
-      fullPath: '/resources/minecraft/resource/plugin/$resourceId'
-      preLoaderRoute: typeof ResourcesMinecraftResourcePluginResourceIdRouteImport
-      parentRoute: typeof ResourcesMinecraftRouteRoute
-    }
   }
 }
 
 interface ResourcesMinecraftRouteRouteChildren {
+  ResourcesMinecraftResourceIdRoute: typeof ResourcesMinecraftResourceIdRoute
   ResourcesMinecraftBuildsRoute: typeof ResourcesMinecraftBuildsRoute
   ResourcesMinecraftConfigsRoute: typeof ResourcesMinecraftConfigsRoute
   ResourcesMinecraftGraphicsTexturesRoute: typeof ResourcesMinecraftGraphicsTexturesRoute
@@ -502,11 +623,11 @@ interface ResourcesMinecraftRouteRouteChildren {
   ResourcesMinecraftSetupsRoute: typeof ResourcesMinecraftSetupsRoute
   ResourcesMinecraftSkriptsRoute: typeof ResourcesMinecraftSkriptsRoute
   ResourcesMinecraftIndexRoute: typeof ResourcesMinecraftIndexRoute
-  ResourcesMinecraftResourcePluginResourceIdRoute: typeof ResourcesMinecraftResourcePluginResourceIdRoute
 }
 
 const ResourcesMinecraftRouteRouteChildren: ResourcesMinecraftRouteRouteChildren =
   {
+    ResourcesMinecraftResourceIdRoute: ResourcesMinecraftResourceIdRoute,
     ResourcesMinecraftBuildsRoute: ResourcesMinecraftBuildsRoute,
     ResourcesMinecraftConfigsRoute: ResourcesMinecraftConfigsRoute,
     ResourcesMinecraftGraphicsTexturesRoute:
@@ -519,8 +640,6 @@ const ResourcesMinecraftRouteRouteChildren: ResourcesMinecraftRouteRouteChildren
     ResourcesMinecraftSetupsRoute: ResourcesMinecraftSetupsRoute,
     ResourcesMinecraftSkriptsRoute: ResourcesMinecraftSkriptsRoute,
     ResourcesMinecraftIndexRoute: ResourcesMinecraftIndexRoute,
-    ResourcesMinecraftResourcePluginResourceIdRoute:
-      ResourcesMinecraftResourcePluginResourceIdRoute,
   }
 
 const ResourcesMinecraftRouteRouteWithChildren =
@@ -532,12 +651,18 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreditsRoute: CreditsRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
+  RefundsRoute: RefundsRoute,
   RegisterRoute: RegisterRoute,
+  TosRoute: TosRoute,
   ResourcesMinecraftRouteRoute: ResourcesMinecraftRouteRouteWithChildren,
   ApiOgRoute: ApiOgRoute,
   ResourcesIndexRoute: ResourcesIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiResourcesResourceIdRoute: ApiResourcesResourceIdRoute,
+  ApiResourcesIndexRoute: ApiResourcesIndexRoute,
   ResourcesDiscordIndexRoute: ResourcesDiscordIndexRoute,
+  ResourcesNewIndexRoute: ResourcesNewIndexRoute,
   ResourcesRobloxIndexRoute: ResourcesRobloxIndexRoute,
   ResourcesWebsitesIndexRoute: ResourcesWebsitesIndexRoute,
 }

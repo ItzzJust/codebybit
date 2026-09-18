@@ -1,6 +1,6 @@
 [tools]
-bun = "1.3.14"
 node = "24"
+pnpm = "10.15.0"
 
 [tasks]
 dev = { run = "moon run :dev", description = "Start the dev server" }
@@ -8,8 +8,8 @@ build = { run = "moon run :build", description = "Build for production" }
 preview = { run = "moon run :preview", description = "Preview the production build" }
 typecheck = { run = "moon run :typecheck", description = "Type-check all workspaces" }
 test = { run = "moon run :test", description = "Run tests" }
-check = { run = "bun run check", description = "Lint and format check" }
-fix = { run = "bun run fix", description = "Auto-fix lint and format issues" }
+check = { run = "pnpm run check", description = "Lint and format check" }
+fix = { run = "pnpm run fix", description = "Auto-fix lint and format issues" }
 db-generate = { run = "moon run web:db-generate", description = "Generate Drizzle migrations" }
 db-push = { run = "moon run web:db-push", description = "Push the Drizzle schema" }
 db-studio = { run = "moon run web:db-studio", description = "Open Drizzle Studio" }

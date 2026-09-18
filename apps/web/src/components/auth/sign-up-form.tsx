@@ -17,7 +17,6 @@ export type SignUpStatus = "idle" | "loading" | "success" | "error";
 
 interface SignUpFormProps {
   status?: SignUpStatus;
-  errorMessage?: string;
   onSubmit?: (values: SignUpValues) => void | Promise<void>;
   footer?: React.ReactNode;
 }
@@ -57,7 +56,6 @@ function FieldError({ error }: { error?: string }) {
 
 export function SignUpForm({
   status = "idle",
-  errorMessage,
   onSubmit,
   footer,
 }: SignUpFormProps) {
@@ -217,12 +215,6 @@ export function SignUpForm({
         </div>
         <FieldError error={touched.terms ? errors.terms : undefined} />
       </div>
-
-      {errorMessage && (
-        <div className="bg-destructive/10 text-destructive rounded-lg px-3 py-2 text-sm">
-          {errorMessage}
-        </div>
-      )}
 
       <Button type="submit" disabled={isSubmitting} className="w-full">
         {isSubmitting ? (
