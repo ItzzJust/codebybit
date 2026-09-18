@@ -1,15 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
-import { ArrowRight } from "lucide-react";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { ArrowUpRight } from "lucide-react";
 
 export interface CategoryCardProps {
   badge?: string;
@@ -32,39 +23,44 @@ export function CategoryCard({
     <Link
       id={id}
       to={href}
-      className="group focus-visible:ring-ring block h-full rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
+      className="group/card focus-visible:ring-ring block h-full rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
     >
-      <Card className="border-border/50 bg-muted/20 hover:border-primary/30 hover:bg-muted/40 flex h-full min-h-[180px] flex-col overflow-hidden rounded-2xl transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
-        <CardHeader className="pb-3">
-          <div className="bg-primary/10 text-primary group-hover:bg-primary/20 mb-3 flex size-12 items-center justify-center rounded-xl transition-all duration-300">
+      <div className="border-border/40 bg-card hover:border-primary/30 flex h-full min-h-[200px] flex-col overflow-hidden rounded-2xl border transition-colors duration-300">
+        <div className="relative flex flex-1 flex-col gap-4 p-6">
+          {/* Icon */}
+          <div className="bg-primary/10 text-primary group-hover/card:bg-primary group-hover/card:text-primary-foreground flex size-12 items-center justify-center rounded-xl transition-colors duration-300">
             <Icon className="size-5" />
           </div>
 
-          <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-
-          <CardDescription className="mt-1.5 text-sm leading-relaxed">
-            {description}
-          </CardDescription>
-        </CardHeader>
-
-        {badge && (
-          <CardContent className="pt-0">
-            <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
-              {badge}
-            </span>
-          </CardContent>
-        )}
-
-        <CardFooter className="mt-auto pt-2">
-          <div className="text-muted-foreground group-hover:text-primary flex items-center gap-2 text-sm font-medium transition-colors duration-200">
-            <span>Explore resources</span>
-            <ArrowRight
-              aria-hidden="true"
-              className="size-4 transition-transform duration-300 group-hover:translate-x-1"
-            />
+          {/* Text */}
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center gap-2">
+              <h3 className="text-foreground text-lg font-semibold">
+                {title}
+              </h3>
+              {badge && (
+                <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider">
+                  {badge}
+                </span>
+              )}
+            </div>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {description}
+            </p>
           </div>
-        </CardFooter>
-      </Card>
+
+          {/* Footer */}
+          <div className="border-border/40 group-hover/card:border-primary/20 mt-auto border-t pt-4 transition-colors">
+            <div className="text-muted-foreground group-hover/card:text-primary flex items-center gap-1.5 text-sm font-medium transition-colors">
+              <span>Explore</span>
+              <ArrowUpRight
+                aria-hidden="true"
+                className="size-4 transition-transform duration-300 group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </Link>
   );
 }

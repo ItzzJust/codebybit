@@ -1,5 +1,12 @@
+export type FilterKey =
+  | "category"
+  | "minecraft_version"
+  | "mod_loader"
+  | "software"
+  | "type";
+
 export interface FilterOption {
-  key: string;
+  key: FilterKey;
   label: string;
   options: readonly string[];
 }
@@ -24,13 +31,6 @@ export const filterSections = [
 ] as const;
 
 export type FilterSection = (typeof filterSections)[number];
-
-export type FilterKey =
-  | "category"
-  | "minecraft_version"
-  | "mod_loader"
-  | "software"
-  | "type";
 
 export function normalizeList(value: string[] | string | undefined): string[] {
   if (Array.isArray(value)) {

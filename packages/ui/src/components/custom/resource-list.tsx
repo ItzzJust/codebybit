@@ -136,7 +136,7 @@ export function ResourceList({
   for (const filter of sectionFilters) {
     const values = normalizeList(search[filter.key]);
     if (values.length > 0) {
-      selected.set(filter.key as FilterKey, values);
+      selected.set(filter.key, values);
     }
   }
 

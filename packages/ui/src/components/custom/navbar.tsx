@@ -20,7 +20,7 @@ import {
   UserPlusIcon,
   XIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import { ThemeToggle } from "../motion/theme-toggle";
 import { Logo } from "./logo";
@@ -28,7 +28,7 @@ import { Logo } from "./logo";
 interface NavItem {
   to: string;
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   exact?: boolean;
 }
 
@@ -63,9 +63,13 @@ const navLinks: NavItem[] = [
 
 interface NavbarProps {
   title?: string;
+  logo?: ReactNode;
 }
 
-export function Navbar({ title = "CodeByBit" }: NavbarProps) {
+export function Navbar({
+  title = "CodeByBit",
+  logo = <Logo className="text-primary h-7 w-auto shrink-0" />,
+}: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const matchRoute = useMatchRoute();
 
@@ -94,7 +98,7 @@ export function Navbar({ title = "CodeByBit" }: NavbarProps) {
           to="/"
           className="flex min-w-0 shrink items-center gap-2.5 transition-opacity hover:opacity-80"
         >
-          <Logo className="text-primary h-7 w-auto shrink-0" />
+          {logo}
           <span className="text-foreground truncate text-lg font-bold tracking-tight">
             {title}
           </span>

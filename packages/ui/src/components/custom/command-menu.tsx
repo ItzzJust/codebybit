@@ -19,9 +19,16 @@ import {
   PaletteIcon,
   PickaxeIcon,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 
-const NAV_ITEMS = [
+interface CommandItemDef {
+  icon: ReactNode;
+  label: string;
+  to: string;
+  shortcut?: string;
+}
+
+const NAV_ITEMS: readonly CommandItemDef[] = [
   {
     icon: <HomeIcon className="size-4" />,
     label: "Home",
@@ -54,7 +61,7 @@ const NAV_ITEMS = [
   },
 ];
 
-const RESOURCE_CATEGORIES = [
+const RESOURCE_CATEGORIES: readonly CommandItemDef[] = [
   {
     icon: <LayersIcon className="size-4" />,
     label: "All Resources",
