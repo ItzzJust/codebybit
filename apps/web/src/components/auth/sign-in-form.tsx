@@ -1,7 +1,8 @@
 import { Button } from "@codebybit/ui/components/ui/button";
 import { Input } from "@codebybit/ui/components/ui/input";
 import { Label } from "@codebybit/ui/components/ui/label";
-import { Eye, EyeOff, Loader2, User, Lock } from "lucide-react";
+import { Eye, EyeOff, Lock, Loader2, User } from "lucide-react";
+import { m, useReducedMotion } from "motion/react";
 import { useCallback, useState } from "react";
 
 export interface SignInValues {
@@ -22,6 +23,7 @@ export function SignInForm({
   onSubmit,
   footer,
 }: SignInFormProps) {
+  const reduce = useReducedMotion();
   const [values, setValues] = useState<SignInValues>({
     email: "",
     password: "",
@@ -71,7 +73,12 @@ export function SignInForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
-      <div className="flex flex-col gap-2">
+      <m.div
+        initial={reduce ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.1 }}
+        className="flex flex-col gap-2"
+      >
         <Label htmlFor="email">Email or Username</Label>
         <div className="relative">
           <User className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
@@ -91,9 +98,14 @@ export function SignInForm({
         {touched.email && errors.email && (
           <p className="text-destructive text-xs">{errors.email}</p>
         )}
-      </div>
+      </m.div>
 
-      <div className="flex flex-col gap-2">
+      <m.div
+        initial={reduce ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.15 }}
+        className="flex flex-col gap-2"
+      >
         <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Lock className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
@@ -126,21 +138,34 @@ export function SignInForm({
         {touched.password && errors.password && (
           <p className="text-destructive text-xs">{errors.password}</p>
         )}
-      </div>
+      </m.div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? (
-          <>
-            <Loader2 className="size-4 animate-spin" />
-            Signing in...
-          </>
-        ) : (
-          "Sign in"
-        )}
-      </Button>
+      <m.div
+        initial={reduce ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
+      >
+        <Button type="submit" disabled={isSubmitting} className="w-full">
+          {isSubmitting ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              Signing in...
+            </>
+          ) : (
+            "Sign in"
+          )}
+        </Button>
+      </m.div>
 
       {footer && (
-        <p className="text-muted-foreground text-center text-sm">{footer}</p>
+        <m.p
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.25 }}
+          className="text-muted-foreground text-center text-sm"
+        >
+          {footer}
+        </m.p>
       )}
     </form>
   );

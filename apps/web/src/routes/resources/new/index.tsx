@@ -21,7 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { m, useReducedMotion } from "motion/react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { discordCategories } from "@/data/discord/categories";
@@ -134,41 +134,6 @@ function validateForm(values: ResourceForm) {
     errs.description = "Description must be at least 10 characters";
   }
   return errs;
-}
-
-// ---------------------------------------------------------------------------
-// Auth gate
-// ---------------------------------------------------------------------------
-
-function AuthGate() {
-  const reduce = useReducedMotion();
-
-  return (
-    <div className="mx-auto max-w-md space-y-6 px-4 py-16 text-center">
-      <m.div
-        initial={reduce ? false : { opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="space-y-3"
-      >
-        <h1 className="text-2xl font-bold tracking-tight">Sign in required</h1>
-        <p className="text-muted-foreground text-sm">
-          You need to be signed in to submit a resource.
-        </p>
-      </m.div>
-      <m.div
-        initial={reduce ? false : { opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
-        className="flex justify-center gap-3"
-      >
-        <Button variant="outline" render={<Link to="/login" />}>
-          Sign in
-        </Button>
-        <Button render={<Link to="/register" />}>Create account</Button>
-      </m.div>
-    </div>
-  );
 }
 
 // ---------------------------------------------------------------------------
@@ -580,16 +545,19 @@ function ResourceCreatePage() {
     [platform]
   );
 
-  if (isPending) {
+  useEffect(() => {
+    if (!isPending && !session) {
+      toast.warning("Sign in required to submit a resource.");
+      navigate({ to: "/login" });
+    }
+  }, [isPending, session, navigate]);
+
+  if (isPending || !session) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <Loader2 className="text-muted-foreground size-6 animate-spin" />
       </div>
     );
-  }
-
-  if (!session) {
-    return <AuthGate />;
   }
 
   const canAdvance = () => {

@@ -2,7 +2,8 @@ import { Button } from "@codebybit/ui/components/ui/button";
 import { Checkbox } from "@codebybit/ui/components/ui/checkbox";
 import { Input } from "@codebybit/ui/components/ui/input";
 import { Label } from "@codebybit/ui/components/ui/label";
-import { Eye, EyeOff, Loader2, Mail, Lock, User } from "lucide-react";
+import { Eye, EyeOff, Lock, Loader2, Mail, User } from "lucide-react";
+import { m, useReducedMotion } from "motion/react";
 import React, { useCallback, useState } from "react";
 
 export interface SignUpValues {
@@ -59,6 +60,7 @@ export function SignUpForm({
   onSubmit,
   footer,
 }: SignUpFormProps) {
+  const reduce = useReducedMotion();
   const [values, setValues] = useState<SignUpValues>({
     confirmPassword: "",
     email: "",
@@ -106,100 +108,71 @@ export function SignUpForm({
     await onSubmit?.(values);
   };
 
+  const fields = [
+    { key: "name" as const, label: "Name", icon: User, inputProps: { id: "name", autoComplete: "name" as const, placeholder: "Your name" }, type: "text" },
+    { key: "email" as const, label: "Email", icon: Mail, inputProps: { id: "email", type: "email" as const, inputMode: "email" as const, autoComplete: "email" as const, placeholder: "you@example.com" }, type: "text" },
+    { key: "password" as const, label: "Password", icon: Lock, inputProps: { id: "password", autoComplete: "new-password" as const, placeholder: "At least 8 characters" }, type: "password" },
+    { key: "confirmPassword" as const, label: "Confirm password", icon: Lock, inputProps: { id: "confirmPassword", autoComplete: "new-password" as const, placeholder: "Re-enter your password" }, type: "password" },
+  ];
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="name">Name</Label>
-        <div className="relative">
-          <User className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-          <Input
-            id="name"
-            autoComplete="name"
-            placeholder="Your name"
-            disabled={isSubmitting}
-            value={values.name}
-            onChange={(e) => updateField("name", e.target.value)}
-            className="pl-9"
-            aria-invalid={touched.name && !!errors.name}
-          />
-        </div>
-        <FieldError error={touched.name ? errors.name : undefined} />
-      </div>
+      {fields.map((field, i) => {
+        const Icon = field.icon;
+        const fieldKey = field.key;
+        const isPassword = fieldKey === "password" || fieldKey === "confirmPassword";
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="email">Email</Label>
-        <div className="relative">
-          <Mail className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-          <Input
-            id="email"
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            placeholder="you@example.com"
-            disabled={isSubmitting}
-            value={values.email}
-            onChange={(e) => updateField("email", e.target.value)}
-            className="pl-9"
-            aria-invalid={touched.email && !!errors.email}
-          />
-        </div>
-        <FieldError error={touched.email ? errors.email : undefined} />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="password">Password</Label>
-        <div className="relative">
-          <Lock className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-          <Input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            autoComplete="new-password"
-            placeholder="At least 8 characters"
-            disabled={isSubmitting}
-            value={values.password}
-            onChange={(e) => updateField("password", e.target.value)}
-            className="pr-9 pl-9"
-            aria-invalid={touched.password && !!errors.password}
-          />
-          <button
-            type="button"
-            disabled={isSubmitting}
-            onClick={() => setShowPassword((prev) => !prev)}
-            className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
-            aria-label={showPassword ? "Hide password" : "Show password"}
+        return (
+          <m.div
+            key={fieldKey}
+            initial={reduce ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.05 + i * 0.05 }}
+            className="flex flex-col gap-2"
           >
-            {showPassword ? (
-              <EyeOff className="size-4" />
-            ) : (
-              <Eye className="size-4" />
-            )}
-          </button>
-        </div>
-        <FieldError error={touched.password ? errors.password : undefined} />
-      </div>
+            <Label htmlFor={field.inputProps.id}>{field.label}</Label>
+            <div className="relative">
+              <Icon className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+              <Input
+                {...field.inputProps}
+                type={
+                  isPassword && showPassword ? "text" : (field.inputProps.type ?? "text")
+                }
+                disabled={isSubmitting}
+                value={values[fieldKey]}
+                onChange={(e) => updateField(fieldKey, e.target.value)}
+                className={isPassword ? "pr-9 pl-9" : "pl-9"}
+                aria-invalid={touched[fieldKey] && !!errors[fieldKey]}
+              />
+              {isPassword && (
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
+              )}
+            </div>
+            <FieldError
+              error={touched[fieldKey] ? errors[fieldKey] : undefined}
+            />
+          </m.div>
+        );
+      })}
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="confirmPassword">Confirm password</Label>
-        <div className="relative">
-          <Lock className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-          <Input
-            id="confirmPassword"
-            type={showPassword ? "text" : "password"}
-            autoComplete="new-password"
-            placeholder="Re-enter your password"
-            disabled={isSubmitting}
-            value={values.confirmPassword}
-            onChange={(e) => updateField("confirmPassword", e.target.value)}
-            className="pl-9"
-            aria-invalid={touched.confirmPassword && !!errors.confirmPassword}
-          />
-        </div>
-        <FieldError
-          error={touched.confirmPassword ? errors.confirmPassword : undefined}
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
+      <m.div
+        initial={reduce ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.25 }}
+        className="flex flex-col gap-2"
+      >
         <div className="flex items-center gap-2">
           <Checkbox
             id="terms"
@@ -214,21 +187,34 @@ export function SignUpForm({
           </Label>
         </div>
         <FieldError error={touched.terms ? errors.terms : undefined} />
-      </div>
+      </m.div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? (
-          <>
-            <Loader2 className="size-4 animate-spin" />
-            Creating account...
-          </>
-        ) : (
-          "Create account"
-        )}
-      </Button>
+      <m.div
+        initial={reduce ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
+      >
+        <Button type="submit" disabled={isSubmitting} className="w-full">
+          {isSubmitting ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              Creating account...
+            </>
+          ) : (
+            "Create account"
+          )}
+        </Button>
+      </m.div>
 
       {footer && (
-        <p className="text-muted-foreground text-center text-sm">{footer}</p>
+        <m.p
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.35 }}
+          className="text-muted-foreground text-center text-sm"
+        >
+          {footer}
+        </m.p>
       )}
     </form>
   );
