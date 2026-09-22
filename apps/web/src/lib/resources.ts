@@ -3,6 +3,7 @@ import { eq, desc } from "drizzle-orm";
 import { db } from "@/db";
 import { resource } from "@/db/schema";
 import { cache } from "@/lib/cache";
+import { sanitizeDescription } from "@/lib/sanitize";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -74,7 +75,7 @@ export const resourceService = {
         authorId: input.authorId,
         category: input.category ?? null,
         createdAt: now,
-        description: input.description,
+        description: sanitizeDescription(input.description),
         downloads: 0,
         id: input.id,
         price: input.price ?? 0,
@@ -177,7 +178,7 @@ export const resourceService = {
         }),
         ...(fields.category !== undefined && { category: fields.category }),
         ...(fields.description !== undefined && {
-          description: fields.description,
+          description: sanitizeDescription(fields.description),
         }),
         ...(fields.price !== undefined && { price: fields.price }),
         ...(fields.section !== undefined && { section: fields.section }),

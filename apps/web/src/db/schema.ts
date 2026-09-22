@@ -10,12 +10,14 @@ import {
 
 export const user = pgTable("user", {
   createdAt: timestamp("created_at").notNull(),
+  displayUsername: text("display_username"),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").notNull(),
   id: text("id").primaryKey(),
   image: text("image"),
   name: text("name").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
+  username: text("username").unique(),
 });
 
 export const session = pgTable("session", {

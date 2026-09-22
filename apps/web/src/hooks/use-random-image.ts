@@ -19,21 +19,25 @@ for (const path of imagePaths) {
 }
 
 // Pick a random item from an array (replaces radash `draw`)
-function pickRandom<T>(arr: T[]): T | undefined {
-  if (arr.length === 0) {return undefined;}
+function pickRandom<T>(arr: readonly T[]): T | undefined {
+  if (arr.length === 0) {
+    return undefined;
+  }
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-export function useRandomImage(
-  categoryId: string,
-  intervalMs = 15_000
-): { src: string; isLoaded: boolean; handleLoad: () => void } {
+export function useRandomImage(categoryId: string, intervalMs = 15_000) {
   const defaultSrc =
     imagesByCategory[categoryId]?.[0] ?? `/${categoryId}/0.png`;
   const [src, setSrc] = useState(defaultSrc);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    // Reduced-motion users get a static image — no rotation.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
     let timeoutId: ReturnType<typeof setTimeout>;
 
     const selectRandom = () => {
@@ -43,14 +47,25 @@ export function useRandomImage(
       setIsLoaded(false);
       setSrc(selected);
 
+      // Self-reference is fine here — it only runs once the timeout fires.
       const delay = intervalMs + Math.random() * 5000;
       timeoutId = window.setTimeout(selectRandom, delay);
     };
 
+    // Pause rotation while the tab is hidden to save CPU/battery.
+    const handleVisibility = () => {
+      window.clearTimeout(timeoutId);
+      if (document.visibilityState === "visible") {
+        selectRandom();
+      }
+    };
+
     selectRandom();
+    document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
       window.clearTimeout(timeoutId);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [categoryId, intervalMs, defaultSrc]);
 

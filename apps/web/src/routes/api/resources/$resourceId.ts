@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { auth } from "@/lib/auth";
+import { isSameOrigin } from "@/lib/http-guards";
+import { validateResourceUpdate } from "@/lib/resource-validation";
 import { resourceService } from "@/lib/resources";
 
 export const Route = createFileRoute("/api/resources/$resourceId")({
@@ -17,6 +19,11 @@ export const Route = createFileRoute("/api/resources/$resourceId")({
       },
 
       PUT: async ({ params, request }) => {
+        // CSRF defense — reject cross-site state-changing requests.
+        if (!isSameOrigin(request)) {
+          return Response.json({ error: "Forbidden" }, { status: 403 });
+        }
+
         // Auth check
         const session = await auth.api.getSession({
           headers: Object.fromEntries(request.headers),
@@ -36,39 +43,25 @@ export const Route = createFileRoute("/api/resources/$resourceId")({
         }
 
         const body = await request.json();
+        const result = validateResourceUpdate(body);
+        if (!result.ok) {
+          return Response.json({ error: result.error }, { status: 400 });
+        }
 
-        const {
-          attributes,
-          category,
-          description,
-          price,
-          section,
-          tags,
-          title,
-        } = body as {
-          attributes?: Record<string, string[]>;
-          category?: string;
-          description?: string;
-          price?: number;
-          section?: string;
-          tags?: string[];
-          title?: string;
-        };
-
-        const row = await resourceService.update(params.resourceId, {
-          ...(attributes !== undefined && { attributes }),
-          ...(category !== undefined && { category }),
-          ...(description !== undefined && { description }),
-          ...(price !== undefined && { price }),
-          ...(section !== undefined && { section }),
-          ...(tags !== undefined && { tags }),
-          ...(title !== undefined && { title }),
-        });
+        const row = await resourceService.update(
+          params.resourceId,
+          result.value
+        );
 
         return Response.json(row);
       },
 
       DELETE: async ({ params, request }) => {
+        // CSRF defense — reject cross-site state-changing requests.
+        if (!isSameOrigin(request)) {
+          return Response.json({ error: "Forbidden" }, { status: 403 });
+        }
+
         // Auth check
         const session = await auth.api.getSession({
           headers: Object.fromEntries(request.headers),
@@ -87,7 +80,7 @@ export const Route = createFileRoute("/api/resources/$resourceId")({
           return Response.json({ error: "Forbidden" }, { status: 403 });
         }
 
-        const row = await resourceService.delete(params.resourceId);
+        await resourceService.delete(params.resourceId);
 
         return Response.json({ success: true });
       },

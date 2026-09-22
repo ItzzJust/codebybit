@@ -89,6 +89,10 @@ Write code that is **accessible, performant, type-safe, and maintainable**. Focu
 - React 19+: pass `ref` as a prop instead of `React.forwardRef`
 - Use `@unpic/react` for remote images
 
+### Auth pages
+
+- Sign in / Sign up pages use a simple centered layout — no split-screen branding panel, no card wrapper around the form.
+
 ### Error handling & debugging
 
 - No `console.log`, `debugger`, or `alert` in production code

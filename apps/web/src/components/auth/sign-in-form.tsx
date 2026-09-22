@@ -4,6 +4,7 @@ import { Label } from "@codebybit/ui/components/ui/label";
 import { Eye, EyeOff, Lock, Loader2, User } from "lucide-react";
 import { m, useReducedMotion } from "motion/react";
 import { useCallback, useState } from "react";
+import type { FormEvent, ReactNode } from "react";
 
 export interface SignInValues {
   email: string;
@@ -15,7 +16,7 @@ export type SignInStatus = "idle" | "loading" | "success" | "error";
 interface SignInFormProps {
   status?: SignInStatus;
   onSubmit?: (values: SignInValues) => void | Promise<void>;
-  footer?: React.ReactNode;
+  footer?: ReactNode;
 }
 
 export function SignInForm({
@@ -49,7 +50,7 @@ export function SignInForm({
     return errs;
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setTouched({ email: true, password: true });
 
@@ -72,11 +73,25 @@ export function SignInForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+      {/* Heading */}
       <m.div
         initial={reduce ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
+        transition={{ duration: 0.3 }}
+        className="space-y-1.5"
+      >
+        <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+        <p className="text-muted-foreground text-sm">
+          Sign in to access your account and resources.
+        </p>
+      </m.div>
+
+      {/* Email / Username */}
+      <m.div
+        initial={reduce ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05, duration: 0.3 }}
         className="flex flex-col gap-2"
       >
         <Label htmlFor="email">Email or Username</Label>
@@ -91,7 +106,7 @@ export function SignInForm({
             value={values.email}
             onChange={(e) => updateField("email", e.target.value)}
             onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
-            className="pl-9"
+            className="h-11 pl-9"
             aria-invalid={touched.email && !!errors.email}
           />
         </div>
@@ -100,13 +115,22 @@ export function SignInForm({
         )}
       </m.div>
 
+      {/* Password */}
       <m.div
         initial={reduce ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.15 }}
+        transition={{ delay: 0.1, duration: 0.3 }}
         className="flex flex-col gap-2"
       >
-        <Label htmlFor="password">Password</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="password">Password</Label>
+          <button
+            type="button"
+            className="text-primary hover:text-primary/80 text-xs font-medium transition-colors"
+          >
+            Forgot password?
+          </button>
+        </div>
         <div className="relative">
           <Lock className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <Input
@@ -118,7 +142,7 @@ export function SignInForm({
             value={values.password}
             onChange={(e) => updateField("password", e.target.value)}
             onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
-            className="pr-9 pl-9"
+            className="h-11 pr-9 pl-9"
             aria-invalid={touched.password && !!errors.password}
           />
           <button
@@ -140,12 +164,13 @@ export function SignInForm({
         )}
       </m.div>
 
+      {/* Submit */}
       <m.div
         initial={reduce ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
+        transition={{ delay: 0.15, duration: 0.3 }}
       >
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button type="submit" disabled={isSubmitting} className="h-11 w-full">
           {isSubmitting ? (
             <>
               <Loader2 className="size-4 animate-spin" />
@@ -158,14 +183,14 @@ export function SignInForm({
       </m.div>
 
       {footer && (
-        <m.p
+        <m.div
           initial={reduce ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.25 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
           className="text-muted-foreground text-center text-sm"
         >
           {footer}
-        </m.p>
+        </m.div>
       )}
     </form>
   );

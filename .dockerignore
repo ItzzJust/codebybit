@@ -1,0 +1,16 @@
+.git
+.gitignore
+.tmp
+.opencode
+.agents
+.moon/cache
+.moon/stuff
+node_modules
+**/node_modules
+**/dist
+**/.output
+**/.vinxi
+**/.turbo
+apps/web/.env*
+*.log
+.DS_Store

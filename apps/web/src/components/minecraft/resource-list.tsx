@@ -57,11 +57,11 @@ function ResourceCard({
       <Link
         to="/resources/minecraft/$resourceId"
         params={{ resourceId: cleanId }}
-        className="group/card border-border/40 bg-card hover:border-primary/20 hover:shadow-primary/5 flex h-full flex-col overflow-hidden rounded-2xl border transition-all duration-300 hover:shadow-xl hover:shadow-primary/5"
+        className="group/card border-border/40 bg-card hover:border-primary/20 hover:shadow-primary/5 hover:shadow-primary/5 flex h-full flex-col overflow-hidden rounded-2xl border transition-all duration-300 hover:shadow-xl"
       >
         {/* Image placeholder */}
         <div className="relative overflow-hidden">
-          <div className="bg-gradient-to-br from-muted/60 via-muted/40 to-muted/20 flex aspect-[16/9] items-center justify-center">
+          <div className="from-muted/60 via-muted/40 to-muted/20 flex aspect-[16/9] items-center justify-center bg-gradient-to-br">
             <ImageIcon className="text-muted-foreground/30 size-10 transition-transform duration-500 group-hover/card:scale-110" />
           </div>
           {/* Price badge */}
@@ -78,7 +78,7 @@ function ResourceCard({
             <div className="absolute top-3 left-3">
               <Badge
                 variant="secondary"
-                className="gap-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-sm backdrop-blur-sm"
+                className="gap-1 bg-emerald-500/10 text-emerald-600 shadow-sm backdrop-blur-sm dark:text-emerald-400"
               >
                 <Sparkles className="size-3" />
                 Free

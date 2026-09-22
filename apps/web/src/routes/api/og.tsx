@@ -2,27 +2,83 @@ import { Resvg } from "@resvg/resvg-js";
 import { createFileRoute } from "@tanstack/react-router";
 import satori from "satori";
 
+import { clientIp } from "@/lib/http-guards";
+import { rateLimit } from "@/lib/rate-limit";
+
 const SITE_NAME = "CodeByBit";
 
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
 
-/** Cached font buffer to avoid re-fetching on every request */
-let cachedFont: ArrayBuffer | null = null;
+// Google serves static TTF files to legacy user agents and woff2 to modern
+// ones. satori's bundled opentype parser can't read woff2, so we use the
+// curve UA to get per-weight TTFs. Parsing the stylesheet at runtime keeps
+// the URLs from going stale when Google rotates its font files.
+const FONT_CSS_URL =
+  "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap";
+const FONT_CSS_USER_AGENT = "curl/8.4.0";
+const FONT_FETCH_TIMEOUT_MS = 5000;
 
-async function getInterFont(): Promise<ArrayBuffer> {
-  if (cachedFont) {
-    return cachedFont;
+const OG_RATE_LIMIT = 30;
+const OG_RATE_WINDOW_SECONDS = 60;
+
+/** Cached font buffers to avoid re-fetching on every request. */
+let cachedRegularFont: ArrayBuffer | null = null;
+let cachedBoldFont: ArrayBuffer | null = null;
+
+/** Extract `font-weight → font url` from a `@font-face` stylesheet. */
+function parseFontUrls(css: string) {
+  const urls: Record<string, string> = {};
+  // Google's css2 output lists one `font-weight` line followed by its `src`
+  // url per @font-face; pairing them sequentially stays correct across rows.
+  const fontFacePattern =
+    /font-weight:\s*(?<weight>\d+);?[\s\S]*?url\((?<url>https:\/\/[^)]+\.(?:ttf|woff2))\)/gu;
+  for (const match of css.matchAll(fontFacePattern)) {
+    const [, weight, url] = match;
+    if (weight && url) {
+      urls[weight] = url;
+    }
+  }
+  return urls;
+}
+
+async function getInterFonts(): Promise<{
+  regular: ArrayBuffer;
+  bold: ArrayBuffer;
+}> {
+  if (cachedRegularFont && cachedBoldFont) {
+    return { regular: cachedRegularFont, bold: cachedBoldFont };
   }
 
-  const fontUrl =
-    "https://fonts.gstatic.com/s/inter/v18/UcCo3FwrK3iLTcviYwYZ90OmSqEpJpE.woff";
-  const res = await fetch(fontUrl);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch Inter font: ${res.status}`);
+  const cssResponse = await fetch(FONT_CSS_URL, {
+    headers: { "User-Agent": FONT_CSS_USER_AGENT },
+    signal: AbortSignal.timeout(FONT_FETCH_TIMEOUT_MS),
+  });
+  if (!cssResponse.ok) {
+    throw new Error(`Failed to fetch Inter stylesheet: ${cssResponse.status}`);
   }
-  cachedFont = await res.arrayBuffer();
-  return cachedFont;
+
+  const css = await cssResponse.text();
+  const fontUrls = parseFontUrls(css);
+
+  const fetchFont = async (weight: number): Promise<ArrayBuffer> => {
+    const fontUrl = fontUrls[weight];
+    if (!fontUrl) {
+      throw new Error(`No font URL found for Inter weight ${weight}`);
+    }
+    const res = await fetch(fontUrl, {
+      signal: AbortSignal.timeout(FONT_FETCH_TIMEOUT_MS),
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to fetch Inter ${weight}: ${res.status}`);
+    }
+    return res.arrayBuffer();
+  };
+
+  const [regular, bold] = await Promise.all([fetchFont(400), fetchFont(700)]);
+  cachedRegularFont = regular;
+  cachedBoldFont = bold;
+  return { regular, bold };
 }
 
 /** Escape text for safe display in the OG template */
@@ -53,6 +109,7 @@ interface OgTemplateProps {
  */
 function ogTemplate({ title, description }: OgTemplateProps) {
   return {
+    key: null,
     type: "div",
     props: {
       children: [
@@ -197,6 +254,7 @@ function ogTemplate({ title, description }: OgTemplateProps) {
         },
       ],
       style: {
+        display: "flex",
         position: "relative",
         width: OG_WIDTH,
         height: OG_HEIGHT,
@@ -210,24 +268,21 @@ async function generateOgImage(
   title: string,
   description: string
 ): Promise<Uint8Array> {
-  const fontData = await getInterFont();
+  const { regular, bold } = await getInterFonts();
 
-  // SAFETY: satori accepts JSX-like objects; ogTemplate returns a valid satori input
-  const svg = await satori(
-    ogTemplate({ title, description }) as unknown as React.ReactElement,
-    {
+  const svg = await satori(ogTemplate({ title, description }), {
       width: OG_WIDTH,
       height: OG_HEIGHT,
       fonts: [
         {
           name: "Inter",
-          data: fontData,
+          data: regular,
           weight: 400,
           style: "normal",
         },
         {
           name: "Inter",
-          data: fontData,
+          data: bold,
           weight: 700,
           style: "normal",
         },
@@ -250,6 +305,15 @@ export const Route = createFileRoute("/api/og")({
   server: {
     handlers: {
       GET: async ({ request }) => {
+        // satori + resvg are CPU-heavy — protect the endpoint from abuse.
+        const allowed = await rateLimit(`og:${clientIp(request)}`, {
+          limit: OG_RATE_LIMIT,
+          windowSeconds: OG_RATE_WINDOW_SECONDS,
+        });
+        if (!allowed) {
+          return new Response("Too many requests", { status: 429 });
+        }
+
         const url = new URL(request.url);
         const title = url.searchParams.get("title") ?? SITE_NAME;
         const description =

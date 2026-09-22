@@ -16,12 +16,11 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         className="w-full max-w-md"
       >
         <div className="mb-8 flex items-center justify-center gap-2">
-          <Logo className="text-primary h-7 w-auto" />
+          <Logo className="text-primary h-8 w-auto" />
           <span className="text-foreground text-lg font-bold tracking-tight">
             CodeByBit
           </span>
         </div>
-
         {children}
       </m.div>
     </main>

@@ -68,7 +68,7 @@ interface NavbarProps {
 
 export function Navbar({
   title = "CodeByBit",
-  logo = <Logo className="text-primary h-7 w-auto shrink-0" />,
+  logo = <Logo className="text-primary h-8 w-auto shrink-0" />,
 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const matchRoute = useMatchRoute();

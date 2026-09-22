@@ -1,7 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { auth } from "@/lib/auth";
+import { isSameOrigin } from "@/lib/http-guards";
+import { validateResourceInput } from "@/lib/resource-validation";
 import { resourceService } from "@/lib/resources";
+
+const DEFAULT_PAGE_LIMIT = 50;
+const MAX_PAGE_LIMIT = 100;
+
+function parsePageParam(value: string | null, fallback: number): number {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+  return Math.trunc(parsed);
+}
 
 export const Route = createFileRoute("/api/resources/")({
   server: {
@@ -9,9 +22,16 @@ export const Route = createFileRoute("/api/resources/")({
       GET: async ({ request }) => {
         const url = new URL(request.url);
         const section = url.searchParams.get("section") ?? undefined;
-        const limit = Math.trunc(Number(url.searchParams.get("limit") ?? "50"));
-        const offset = Math.trunc(
-          Number(url.searchParams.get("offset") ?? "0")
+        const limit = Math.min(
+          Math.max(
+            parsePageParam(url.searchParams.get("limit"), DEFAULT_PAGE_LIMIT),
+            1
+          ),
+          MAX_PAGE_LIMIT
+        );
+        const offset = Math.max(
+          parsePageParam(url.searchParams.get("offset"), 0),
+          0
         );
 
         const rows = await resourceService.list({ limit, offset, section });
@@ -19,6 +39,11 @@ export const Route = createFileRoute("/api/resources/")({
       },
 
       POST: async ({ request }) => {
+        // CSRF defense — reject cross-site state-changing requests.
+        if (!isSameOrigin(request)) {
+          return Response.json({ error: "Forbidden" }, { status: 403 });
+        }
+
         // Auth check
         const session = await auth.api.getSession({
           headers: Object.fromEntries(request.headers),
@@ -28,60 +53,15 @@ export const Route = createFileRoute("/api/resources/")({
         }
 
         const body = await request.json();
-
-        const {
-          attributes,
-          category,
-          description,
-          id,
-          price,
-          section,
-          tags,
-          title,
-        } = body as {
-          attributes?: Record<string, string[]>;
-          category?: string;
-          description: string;
-          id: string;
-          price?: number;
-          section: string;
-          tags?: string[];
-          title: string;
-        };
-
-        // Validate required fields
-        const missingFields: string[] = [];
-        if (!id) {
-          missingFields.push("id");
-        }
-        if (!title) {
-          missingFields.push("title");
-        }
-        if (!description) {
-          missingFields.push("description");
-        }
-        if (!section) {
-          missingFields.push("section");
-        }
-
-        if (missingFields.length > 0) {
-          return Response.json(
-            { error: `Missing required fields: ${missingFields.join(", ")}` },
-            { status: 400 }
-          );
+        const result = validateResourceInput(body);
+        if (!result.ok) {
+          return Response.json({ error: result.error }, { status: 400 });
         }
 
         // Use server-side session user ID — never trust client-provided authorId
         const row = await resourceService.create({
-          attributes,
+          ...result.value,
           authorId: session.user.id,
-          category,
-          description,
-          id,
-          price,
-          section,
-          tags,
-          title,
         });
 
         if (!row) {

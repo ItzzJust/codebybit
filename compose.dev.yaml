@@ -1,0 +1,45 @@
+name: codebybit-dev
+
+# Dev-only infrastructure: PostgreSQL + Valkey.
+# The frontend runs locally with `just dev` and connects to these on localhost.
+#
+# Usage:
+#   docker compose -f compose.dev.yaml up -d
+#   just env          # then set DATABASE_URL / REDIS_URL to the localhost URLs below
+#   just db-push      # create the schema
+#   just dev
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: codebybit
+      POSTGRES_PASSWORD: codebybit
+      POSTGRES_DB: codebybit
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codebybit -d codebybit"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  valkey:
+    image: valkey/valkey:8-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - valkey-data:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-data:
+  valkey-data:
