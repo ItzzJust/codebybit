@@ -1,45 +1,17 @@
-import { Hero, ResourceCategories } from "@codebybit/ui";
+import { Hero, Marquee, ResourceCategories } from "@codebybit/ui";
 import type { ResourceCategory } from "@codebybit/ui";
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 
+import { resourceCategories } from "@/data/resource-categories";
 import { useRandomImage } from "@/hooks/use-random-image";
 
 export const Route = createFileRoute("/")({ component: App });
 
-const categories: readonly ResourceCategory[] = [
-  {
-    description:
-      "Plugins, mods, builds, textures, server setups, and more for your Minecraft server.",
-    href: "/resources/minecraft",
-    id: "minecraft",
-    images: [],
-    title: "Minecraft",
-  },
-  {
-    description:
-      "Scripts, UI kits, 3D models, and game assets for Roblox developers.",
-    href: "/resources/roblox",
-    id: "roblox",
-    images: [],
-    title: "Roblox",
-  },
-  {
-    description:
-      "Templates, components, and full website themes for web projects.",
-    href: "/resources/websites",
-    id: "websites",
-    images: [],
-    title: "Websites",
-  },
-  {
-    description:
-      "Bot setups, server templates, and community resources for Discord.",
-    href: "/resources/discord",
-    id: "discord",
-    images: [],
-    title: "Discord",
-  },
-];
+// Single source of truth: the shared category data module. The home page only
+// needs the subset that <ResourceCategories> renders.
+const categories: readonly ResourceCategory[] = resourceCategories.map(
+  ({ description, href, id, title }) => ({ description, href, id, title })
+);
 
 function App() {
   const minecraftImg = useRandomImage("minecraft");
@@ -49,13 +21,15 @@ function App() {
 
   type CategoryId = "discord" | "minecraft" | "roblox" | "websites";
 
-  const imageMap: Record<CategoryId, string> = {
+  const imageMap = {
     discord: discordImg.src,
     minecraft: minecraftImg.src,
     roblox: robloxImg.src,
     websites: websitesImg.src,
-  };
+  } satisfies Record<CategoryId, string>;
 
+  // SAFETY: the home page only calls getRandomImage with one of the four
+  // category ids above; any other id falls back to the default path below.
   const getRandomImage = (categoryId: string): string =>
     imageMap[categoryId as CategoryId] ?? `/${categoryId}/0.png`;
 
@@ -77,6 +51,24 @@ function App() {
           },
         ]}
       />
+
+      {/* Category ticker */}
+      <Marquee
+        gap="3rem"
+        speed={35}
+        className="border-border/40 bg-muted/30 border-y py-4"
+      >
+        {resourceCategories.map((category) => (
+          <Link
+            key={category.id}
+            to={category.href}
+            className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm font-medium tracking-wide transition-colors"
+          >
+            <category.icon aria-hidden className="size-4" />
+            {category.title}
+          </Link>
+        ))}
+      </Marquee>
 
       {/* Resource Categories Section */}
       <section

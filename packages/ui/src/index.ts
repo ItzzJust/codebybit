@@ -92,6 +92,10 @@ export {
 export { MagneticButton, StatefulButton } from "./components/motion/button";
 export { ChromaticTextReveal } from "./components/motion/chromatic-text-reveal";
 export { Magnetic } from "./components/motion/magnetic";
+export { Marquee } from "./components/motion/marquee";
+export type { MarqueeProps } from "./components/motion/marquee";
+export { TiltCard } from "./components/motion/tilt-card";
+export type { TiltCardProps } from "./components/motion/tilt-card";
 export * from "./components/motion/not-found";
 export { AuthForm } from "./components/motion/auth-form";
 export type { AuthFormProps, AuthStatus } from "./components/motion/auth-form";
