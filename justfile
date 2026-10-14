@@ -8,6 +8,15 @@ default:
 dev: # Start the dev server
   moon run :dev
 
+run: # Bootstrap everything (deps, env, schema) then start the dev server
+  mise install
+  pnpm install
+  # Scaffold .env.local from .env.example only if it does not exist yet —
+  # never overwrite an existing .env.local.
+  test -f apps/web/.env.local || cp apps/web/.env.example apps/web/.env.local
+  moon run web:db-push
+  moon run :dev
+
 build: # Build for production
   moon run :build
 

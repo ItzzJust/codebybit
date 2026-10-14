@@ -4,7 +4,7 @@ import { useHoverCapable } from "@codebybit/ui/hooks/use-hover-capable";
 import { SPRING_MOUSE } from "@codebybit/ui/lib/ease";
 import { cn } from "@codebybit/ui/lib/utils";
 import {
-  motion,
+  m,
   useMotionTemplate,
   useMotionValue,
   useReducedMotion,
@@ -62,7 +62,7 @@ export function TiltCard({
   const glareBg = useMotionTemplate`radial-gradient(circle at ${gx}% ${gy}%, var(--foreground), transparent 50%)`;
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
@@ -74,12 +74,12 @@ export function TiltCard({
     >
       {children}
       {glare && enabled ? (
-        <motion.div
+        <m.div
           aria-hidden
           style={{ background: glareBg }}
           className="pointer-events-none absolute inset-0 opacity-15"
         />
       ) : null}
-    </motion.div>
+    </m.div>
   );
 }

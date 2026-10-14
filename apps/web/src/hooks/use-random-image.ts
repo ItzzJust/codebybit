@@ -5,13 +5,18 @@ const rawImages = import.meta.glob<string>(
   { eager: true, import: "default", query: "?url" }
 );
 
-const imagePaths = Object.keys(rawImages);
+const imagePaths = Object.keys(rawImages).map((path) =>
+  // Vite resolves public-dir globs to "/public/..." URLs, but public files are
+  // served at the root, so strip the prefix for URLs that work in both dev and
+  // production (dist/client/public does not exist; images live at dist/client/).
+  path.replace(/^\/public(?=\/)/u, "")
+);
 
 // Group images by category (replaces radash `group`)
 const imagesByCategory: Record<string, string[]> = {};
 for (const path of imagePaths) {
-  // Path format: /public/minecraft/0.png → category = "minecraft"
-  const category = path.split("/")[2] ?? "uncategorized";
+  // Path format: /minecraft/0.png → category = "minecraft"
+  const category = path.split("/")[1] ?? "uncategorized";
   if (!imagesByCategory[category]) {
     imagesByCategory[category] = [];
   }

@@ -4,6 +4,7 @@ pnpm = "10.15.0"
 
 [tasks]
 dev = { run = "moon run :dev", description = "Start the dev server" }
+run = { run = "mise install && pnpm install && (test -f apps/web/.env.local || cp apps/web/.env.example apps/web/.env.local) && moon run web:db-push && moon run :dev", description = "Bootstrap everything then start the dev server" }
 build = { run = "moon run :build", description = "Build for production" }
 preview = { run = "moon run :preview", description = "Preview the production build" }
 typecheck = { run = "moon run :typecheck", description = "Type-check all workspaces" }
